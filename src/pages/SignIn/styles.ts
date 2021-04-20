@@ -1,9 +1,64 @@
 import styled from 'styled-components/native';
-import { Platform } from 'react-native';
 
 export const Container = styled.View`
   flex: 1;
   align-items: center;
   justify-content: center;
-  padding: 0 30px ${Platform.OS === 'android' ? 100 : 30}px;
+`;
+
+export const Content = styled.ScrollView`
+  flex: 1;
+`;
+
+export const ContainerText = styled.TouchableOpacity`
+  margin-top: 30;
+  flex:0.2;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: flex-start;
+  width: 340;
+`;
+
+export const Register = styled.Text`
+  font-family: 'Lato-400Regular';
+  font-size: 14px;
+  color: #fa7592;
+  text-decoration: underline;
+`;
+
+export const ContainerImage = styled.View`
+  flex:1;
+  height: 380;
+`;
+
+export const Table = styled.View`
+  flex:1;
+  height: 432;
+  width: 360;
+  border-top-left-radius: 24;
+  border-top-right-radius: 24;
+  background-color: #fff;
+`;
+
+export const HeaderTable = styled.View`
+  padding: 16px;
+  background: #fff;
+  border-top-left-radius: 24;
+  border-top-right-radius: 24;
+
+  flex-direction: column;
+`;
+
+export const Title = styled.Text`
+  font-size: 20;
+  line-height:26;
+  font-family: 'Lato-700Bold';
+  color: #2cc7cf;
+`;
+
+export const SubTitle = styled.Text`
+  font-size: 16;
+  line-height:20;
+  font-family: 'Lato-700Bold';
+  color: #b4b5b6;
 `;

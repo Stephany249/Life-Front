@@ -1,10 +1,14 @@
 import React from 'react';
-import { View } from 'react-native';
+import { Text } from 'react-native';
 
-// import { Container } from './styles';
+import { Container } from './styles';
 
 const SignUp: React.FC = () => {
-  return <View />;
+  return (
+    <Container>
+      <Text>Olá SingUp</Text>
+    </Container>
+  );
 }
 
 export default SignUp;

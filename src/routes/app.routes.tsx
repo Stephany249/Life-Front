@@ -6,12 +6,7 @@ import Dashboard from '../pages/Dashboard';
 const App = createStackNavigator();
 
 const AppRoutes: React.FC = () => (
-  <App.Navigator
-    screenOptions={{
-      headerShown: false,
-      cardStyle: { backgroundColor: '#312e38' },
-    }}
-  >
+  <App.Navigator>
     <App.Screen name="Dashboard" component={Dashboard} />
   </App.Navigator>
 );
