@@ -1,10 +1,11 @@
 import React from 'react';
 import { ActivityIndicator, View } from 'react-native';
 
-import AurthRoutes from './auth.routes';
+import AuthRoutes from './auth.routes';
 import AppRoutes from './app.routes';
 
 import { useAuth } from '../hooks/auth';
+import theme from '../assets/styles/theme';
 
 const Routes: React.FC = () => {
   const { user, loading } = useAuth();
@@ -12,12 +13,12 @@ const Routes: React.FC = () => {
   if (loading) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator size="large" color="#999" />
+        <ActivityIndicator size="large" color={theme.carnation} />
       </View>
     );
   }
 
-  return user ? <AppRoutes /> : <AurthRoutes />;
+  return user ? <AppRoutes /> : <AuthRoutes />;
 };
 
 export default Routes;

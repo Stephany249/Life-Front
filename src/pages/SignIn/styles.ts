@@ -7,11 +7,10 @@ export const Container = styled.View`
 `;
 
 export const Content = styled.ScrollView`
-  flex: 1;
 `;
 
 export const ContainerText = styled.TouchableOpacity`
-  margin-top: 30;
+  margin-top: 40;
   flex:0.2;
   flex-direction: row;
   justify-content: flex-end;
@@ -20,7 +19,7 @@ export const ContainerText = styled.TouchableOpacity`
 `;
 
 export const Register = styled.Text`
-  font-family: 'Lato-400Regular';
+  font-family: 'Lato_400Regular';
   font-size: 14px;
   color: #fa7592;
   text-decoration: underline;
@@ -52,13 +51,27 @@ export const HeaderTable = styled.View`
 export const Title = styled.Text`
   font-size: 20;
   line-height:26;
-  font-family: 'Lato-700Bold';
+  font-family: 'Lato_700Bold';
   color: #2cc7cf;
 `;
 
 export const SubTitle = styled.Text`
   font-size: 16;
   line-height:20;
-  font-family: 'Lato-700Bold';
+  font-family: 'Lato_700Bold';
   color: #b4b5b6;
+`;
+
+export const FormTable = styled.View`
+  justify-content: center;
+  align-items: center;
+`;
+
+export const ContainerTextForgot = styled.TouchableOpacity`
+  flex:1;
+  margin-top: 40;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 340;
 `;

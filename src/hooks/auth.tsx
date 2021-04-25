@@ -60,24 +60,33 @@ export const AuthProvider: React.FC = ({ children }) => {
   }, []);
 
   const signIn = useCallback(async ({ email, password }) => {
-    const response = await api.post('auth/login', {
-      email,
-      password,
-    });
+    try{
 
-    const { user, token } = response.data;
+      console.log("authh", email, password);
 
-    await AsyncStorage.multiSet([
-      ['@Life:token', token],
-      ['@Life:user', JSON.stringify(user)],
-    ]);
+      const response = await api.post('/auth/login', {
+        email,
+        password,
+      });
 
-    api.defaults.headers.authorization = `Bearer ${token}`;
+      console.log('dada', response)
 
-    setData({
-      user,
-      token,
-    });
+      const { user, token } = response.data;
+
+      await AsyncStorage.multiSet([
+        ['@Life:token', token],
+        ['@Life:user', JSON.stringify(user)],
+      ]);
+
+      api.defaults.headers.authorization = `Bearer ${token}`;
+
+      setData({
+        user,
+        token,
+      });
+    }catch (err) {
+      console.log(err)
+    }
   }, []);
 
   const signOut = useCallback(async () => {

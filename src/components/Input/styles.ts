@@ -1,38 +1,24 @@
 import styled, { css } from 'styled-components/native';
 
-interface ContainerProps {
-  isFocused: boolean;
-  isErrored: boolean;
-}
 
-export const Container = styled.View<ContainerProps>`
-  width: 100%;
-  height: 60px;
+export const Container = styled.View`
+  width: 312;
+  height: 40;
   padding: 0 16px;
-  background: #232129;
   border-radius: 10px;
   margin-bottom: 8px;
-  border: 2px solid #232729;
+  border-bottom-width: 2;
+  border-bottom-color:#232729;
 
   flex-direction: row;
+  justify-content: center;
   align-items: center;
 
-  ${(props) =>
-    props.isErrored &&
-    css`
-      border-color: #c53030;
-    `}
-
-  ${(props) =>
-    props.isFocused &&
-    css`
-      border-color: #ff9000;
-    `}
 `;
 
 export const TextInput = styled.TextInput`
   flex: 1;
-  color: #fff;
+  color: #000;
   font-size: 14px;
-  font-family: 'Lato-Bold';
+  font-family: 'Lato_700Bold';
 `;
