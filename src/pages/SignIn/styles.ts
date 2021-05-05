@@ -44,7 +44,6 @@ export const HeaderTable = styled.View`
   background: #fff;
   border-top-left-radius: 24;
   border-top-right-radius: 24;
-
   flex-direction: column;
 `;
 
