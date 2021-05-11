@@ -27,16 +27,16 @@ export const Register = styled.Text`
 
 export const ContainerImage = styled.View`
   flex:1;
-  height: 380;
+  height: 372;
 `;
 
 export const Table = styled.View`
   flex:1;
-  height: 432;
+  height: 392;
   width: 360;
   border-top-left-radius: 24;
   border-top-right-radius: 24;
-  background-color: #fff;
+  background-color: #ffff;
 `;
 
 export const HeaderTable = styled.View`
@@ -67,10 +67,9 @@ export const FormTable = styled.View`
 `;
 
 export const ContainerTextForgot = styled.TouchableOpacity`
-  flex:1;
-  margin-top: 40;
-  flex-direction: row;
+  padding-top: 16;
   justify-content: center;
   align-items: center;
-  width: 340;
+  border-radius: 8;
+  margin-top: 8px;
 `;
