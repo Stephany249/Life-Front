@@ -1,72 +1,212 @@
 import React, { useEffect, useRef } from 'react';
 import { View } from 'react-native';
-import TextField from '../../../components/Input';
-import { useForm } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form';
+import {getDate, getMonth, getYear} from 'date-fns';
 import { Alert } from 'react-native';
 import { RadioButton } from 'react-native-paper';
-import { SelectButton, TextAnswers, TextQuestion } from '../styles';
+import * as Yup from 'yup';
 
 import Button from '../../../components/Button';
-import { useAuth } from   '../../../hooks/auth';
-import { Text } from 'react-native-paper/lib/typescript/components/Avatar/Avatar';
-import SignUp from '..';
+import TextField from '../../../components/Input';
+
+import { SelectButton, TextAnswers, TextQuestion } from '../styles';
+import { yupResolver } from '@hookform/resolvers/yup';
+import api from '../../../services/api';
+import { useNavigation } from '@react-navigation/native';
+
+type FormData = {
+  name: string;
+  cpf:string;
+  email: string;
+  birthday: string;
+  password: string;
+  passwordConfirmation: string;
+  crm: string;
+};
+
+const schema = Yup.object().shape({
+  name: Yup.string().required('Nome é obrigatório'),
+  cpf: Yup.string().min(11, 'No mínimo 11 dígitos').required(),
+  email: Yup.string()
+    .email('Digite um e-mail válido')
+    .required('E-mail obrigatório'),
+  birthday: Yup.string().required('Data de nascimento é obrigatória'),
+  password: Yup.string().required('Senha obrigatória'),
+  passwordConfirmation: Yup.string().when('password', {
+    is: (val: string | any[]) => !!val.length,
+    then: Yup.string().required('Confirmação de senha obrigatória'),
+    otherwise: Yup.string()
+  }).oneOf([Yup.ref('password'), null], 'Senha não confere')
+});
 
 
 const Form: React.FC = () => {
-  const { register, setValue, handleSubmit } = useForm();
+  const navigation  = useNavigation();
+  const { control, register, handleSubmit, formState: { errors } } = useForm<FormData>({
+    resolver: yupResolver(schema)
+  });
 
-  const { signIn } = useAuth();
+  const [checked, setChecked] = React.useState('CLIENT');
+
   //Fazer integração com a API
   const onSubmit = async (data: { name: string; cpf: string; email: string; birthday: string; password: string; passwordConfirmation: string; crm: string; }) => {
     try{
-      console.log(data.name, data.cpf, data.email, data.birthday, data.password, data.passwordConfirmation, data.crm)
-      await SignUp({
-        name: data.name,
-        password: data.password,
-      });
+      let response: any;
+
+      const splitData = data.birthday.split('/');
+      const newDate = new Date(parseInt(splitData[2]), parseInt(splitData[1]) - 1, parseInt(splitData[0]));
+
+      const day = getDate(newDate);
+      const month = getMonth(newDate);
+      const year = getYear(newDate);
+
+      const parseMonth = String(month).padStart(2, '0');
+      const parseDay = String(day).padStart(2, '0');
+
+      const dateEua = year + '-' + parseMonth + '-' +  parseDay;
+
+      if(checked === 'CLIENT') {
+        response = await api.post('users/client', {
+          name: data.name,
+          cpf: data.cpf,
+          email: data.email,
+          birthday: dateEua.toString(),
+          password: data.password,
+          passwordConfirmation: data.passwordConfirmation
+        });
+      }else {
+        if(data.crm) {
+        response = await api.post('users/specialist', {
+          name: data.name,
+          cpf: data.cpf,
+          email: data.email,
+          birthday: dateEua.toString(),
+          password: data.password,
+          passwordConfirmation: data.passwordConfirmation,
+          crm: data.crm,
+        });
+      }else{
+        Alert.alert(
+          'Campo em branco',
+          `CRM é obrigatório`,
+        );
+      }
+      }
+
+      Alert.alert(`${response.data.message}`)
+      navigation.goBack();
     }catch(err){
       Alert.alert(
         'Erro no cadastro',
-        'Ocorreu um erro ao fazer o cadastro, cheque os dados',
+        `${err.response.data.message}`,
       );
     }
   }
 
-  const [checked, setChecked] = React.useState('CLIENT');
+  useEffect(() => {
+    register('name')
+    register('cpf')
+    register('email')
+    register('birthday')
+    register('password')
+    register('passwordConfirmation')
+    register('crm')
+  },[register])
 
   return (
     <View>
-      <TextField
-        label={'Nome'}
-        placeholder={'Digite seu nome'}
-        onChangeText={(text: any) => setValue('name', text)}
+       <Controller
+        control={control}
+        render={({ field: { onChange, onBlur, value } }) => (
+          <TextField
+            label={'Nome'}
+            onBlur={onBlur}
+            error={errors?.name}
+            onChangeText={(value: any) => onChange(value)}
+            value={value}
+          />
+        )}
+        name="name"
+        rules={{ required: true }}
+        defaultValue=""
       />
-      <TextField
-        label={'CPF'}
-        placeholder={'Digite seu CPF'}
-        onChangeText={(text: any) => setValue('cpf', text)}
+      <Controller
+        control={control}
+        render={({ field: { onChange, onBlur, value } }) => (
+          <TextField
+            label={'CPF'}
+            onBlur={onBlur}
+            error={errors?.cpf}
+            onChangeText={(value: any) => onChange(value)}
+            value={value}
+            mask="999.999.999-99"
+          />
+        )}
+        name="cpf"
+        rules={{ required: true }}
+        defaultValue=""
       />
-      <TextField
-        label={'E-mail'}
-        placeholder={'Digite seu e-mail'}
-        onChangeText={(text: any) => setValue('email', text)}
+      <Controller
+        control={control}
+        render={({ field: { onChange, onBlur, value } }) => (
+          <TextField
+            label={'E-mail'}
+            onBlur={onBlur}
+            error={errors?.email}
+            onChangeText={(value: any) => onChange(value)}
+            value={value}
+          />
+        )}
+        name="email"
+        rules={{ required: true }}
+        defaultValue=""
       />
-       <TextField
-        label={'Data de aniversário'}
-        placeholder={'Digite sua data de aniversário'}
-        onChangeText={(text: any) => setValue('birthday', text)}
+      <Controller
+        control={control}
+        render={({ field: { onChange, onBlur, value } }) => (
+          <TextField
+            label={'Data de aniversário'}
+            onBlur={onBlur}
+            error={errors?.birthday}
+            onChangeText={(value: any) => onChange(value)}
+            value={value}
+          />
+        )}
+        name="birthday"
+        rules={{ required: true }}
+        defaultValue=""
       />
-      <TextField
-        label={'Senha'}
-        placeholder={'Digite sua senha'}
-        onChangeText={(text: any) => setValue('password', text)}
-        secureTextEntry={true}
+      <Controller
+        control={control}
+        render={({ field: { onChange, onBlur, value } }) => (
+          <TextField
+            label={'Senha'}
+            onBlur={onBlur}
+            error={errors?.password}
+            onChangeText={(value: any) => onChange(value)}
+            value={value}
+            secureTextEntry={true}
+          />
+        )}
+        name="password"
+        rules={{ required: true }}
+        defaultValue=""
       />
-      <TextField
-        label={'Confirmar senha'}
-        placeholder={'Confirme sua senha'}
-        onChangeText={(text: any) => setValue('passwordConfirmation', text)}
-        secureTextEntry={true}
+       <Controller
+        control={control}
+        render={({ field: { onChange, onBlur, value } }) => (
+          <TextField
+            label={'Confirmar senha'}
+            onBlur={onBlur}
+            error={errors?.passwordConfirmation}
+            onChangeText={(value: any) => onChange(value)}
+            value={value}
+            secureTextEntry={true}
+          />
+        )}
+        name="passwordConfirmation"
+        rules={{ required: true }}
+        defaultValue=""
       />
       <TextQuestion>
         Você é um profissional e quer ajudar voluntariamente?
@@ -88,11 +228,21 @@ const Form: React.FC = () => {
         <TextAnswers>Sim</TextAnswers>
       </SelectButton>
       {checked === 'SPECIALIST' ?
+      <Controller
+        control={control}
+        render={({ field: { onChange, onBlur, value } }) => (
           <TextField
             label={'CRM'}
-            placeholder={'Digite seu CRM'}
-            onChangeText={(text: any) => setValue('crm', text)}
+            onBlur={onBlur}
+            error={errors?.crm}
+            onChangeText={(value: any) => onChange(value)}
+            value={value}
           />
+        )}
+        name="crm"
+        rules={{ required: true }}
+        defaultValue=""
+      />
       : null}
       <Button
         onPress={

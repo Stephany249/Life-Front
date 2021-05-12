@@ -1,28 +1,16 @@
 import styled from 'styled-components/native';
 
-export const Container = styled.View`
-  flex: 1;
-  align-items: center;
-  justify-content: center;
+export const Keyboard = styled.KeyboardAvoidingView`
+flex: 1;
 `;
 
 export const Content = styled.ScrollView`
 `;
 
-export const ContainerText = styled.TouchableOpacity`
-  margin-top: 40;
-  flex:0.2;
-  flex-direction: row;
-  justify-content: flex-end;
-  align-items: flex-start;
-  width: 340;
-`;
-
-export const Register = styled.Text`
-  font-family: 'Lato_400Regular';
-  font-size: 14px;
-  color: #fa7592;
-  text-decoration: underline;
+export const Container = styled.View`
+  flex: 1;
+  align-items: center;
+  justify-content: center;
 `;
 
 export const ContainerImage = styled.View`
@@ -31,7 +19,7 @@ export const ContainerImage = styled.View`
 
 export const Table = styled.View`
   flex:1;
-  height: 392;
+  height: 290;
   width: 360;
   border-top-left-radius: 24;
   border-top-right-radius: 24;
@@ -65,10 +53,10 @@ export const FormTable = styled.View`
   align-items: center;
 `;
 
-export const ContainerTextForgot = styled.TouchableOpacity`
-  padding-top: 16;
-  justify-content: center;
-  align-items: center;
-  border-radius: 8;
-  margin-top: 8px;
+export const BackButton = styled.TouchableOpacity``;
+
+export const Header = styled.View`
+  padding-top: 32;
+  flex-direction: row;
+  padding-left: 16;
 `;
