@@ -8,6 +8,7 @@ import React, {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import api from '../services/api';
+import { Alert } from 'react-native';
 
 interface User {
   id: string;
@@ -70,8 +71,6 @@ export const AuthProvider: React.FC = ({ children }) => {
         password,
       });
 
-      console.log('dada', response)
-
       const { user, token } = response.data;
 
       await AsyncStorage.multiSet([
@@ -86,7 +85,10 @@ export const AuthProvider: React.FC = ({ children }) => {
         token,
       });
     }catch (err) {
-      console.log(err)
+      Alert.alert(
+        'Erro na autenticação',
+        `${err.response.data.message}`
+      );
     }
   }, []);
 

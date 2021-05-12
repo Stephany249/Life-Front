@@ -5,23 +5,39 @@ import { StatusBar } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import {useFonts, Lato_400Regular, Lato_700Bold} from '@expo-google-fonts/lato';
 import AppLoading from 'expo-app-loading';
+import * as Linking from 'expo-linking';
 
-//import SignIn from './src/pages/SignIn';
 import AppProvider from './src/hooks';
 import Routes from './src/routes';
 
 import theme from './src/assets/styles/theme';
+
+import './src/config/ReactotronConfig';
+
+const prefix = Linking.makeUrl("/");
 
 export default function App() {
   let [fontsLoaded] = useFonts({
     Lato_400Regular, Lato_700Bold
   });
 
+  const linking = {
+    prefixes: [prefix],
+    config: {
+      screens: {
+        ResetPassword: "ResetPassword",
+      },
+    },
+  };
+
+  const url = Linking.useURL();
+  console.log(url);
+
   if(!fontsLoaded) {
     return <AppLoading />
   }else {
     return (
-      <NavigationContainer>
+      <NavigationContainer linking={linking}>
         <StatusBar barStyle="dark-content" backgroundColor={theme.duck_egg_blue} translucent />
           <AppProvider>
             <Routes />

@@ -3,9 +3,7 @@ import { Text } from 'react-native';
 
 import { Content, Container, Title, SubTitle, HeaderTable, BackButton, Header } from './styles';
 
-import theme from '../../assets/styles/theme';
 import Form from './Form';
-import { RadioButton } from 'react-native-paper/lib/typescript/components/RadioButton/RadioButton';
 import Icon from 'react-native-vector-icons/Feather';
 import { useNavigation } from '@react-navigation/native';
 

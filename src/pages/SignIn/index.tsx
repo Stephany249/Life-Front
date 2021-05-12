@@ -11,7 +11,6 @@ import {LinearGradient} from 'expo-linear-gradient';
 import Form from './Form';
 
 import theme from '../../assets/styles/theme';
-import { useAuth } from '../../hooks/auth';
 
 const SignIn: React.FC = () => {
   const navigate = useNavigation();
@@ -41,7 +40,7 @@ const SignIn: React.FC = () => {
             <Form />
           </FormTable>
           <ContainerTextForgot onPress={() => {
-              console.log('Esqueci a senha')
+              navigate.navigate('ForgoutPassword')
             }}>
               <Register>Esqueci minha senha</Register>
             </ContainerTextForgot>

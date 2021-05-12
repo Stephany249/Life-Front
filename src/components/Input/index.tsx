@@ -1,15 +1,16 @@
 import React from 'react';
-import { Text} from 'react-native';
+import { Text } from 'react-native';
 
-import { Container, TextInput } from './styles';
+import { Container, TextInput, TextError } from './styles';
 
-const TextField:React.FC<any> = ({ label, placeholder, ...inputProps }) => (
+const TextField:React.FC<any> = ({ error, label, ...inputProps }) => (
   <>
     <Text>{label}</Text>
-    <Container>
+    <Container isErrored={!!error}>
       <TextInput
         {...inputProps}
       />
+      {!!error && <TextError>{error.message}</TextError>}
     </Container>
   </>
 )
