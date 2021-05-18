@@ -54,7 +54,10 @@ export const SelectButton = styled.View`
 `;
 
 export const HeaderTable = styled.View`
-  padding: 16px;
+  padding-top: 16;
+  padding-right: 16;
+  padding-left: 16;
+  padding-bottom: 16;
   background: #fff;
   border-top-left-radius: 24;
   border-top-right-radius: 24;

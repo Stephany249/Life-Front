@@ -15,6 +15,7 @@ interface User {
   email: string;
   avatar_url: string;
   role: string;
+  crm: string;
 }
 
 interface SignInCredencials {
