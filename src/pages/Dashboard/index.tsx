@@ -1,6 +1,7 @@
-import React, { ReactNode, useEffect, useState, useCallback } from 'react';
-import { Image, Text, StatusBar } from 'react-native';
-import Button from '../../components/Button';
+import React, { useEffect, useState, useCallback } from 'react';
+import { Image, Text, Platform, StatusBar } from 'react-native';
+import {LinearGradient} from 'expo-linear-gradient';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { useAuth } from '../../hooks/auth';
 import FriendImg from '../../assets/Dashboard/Friend/7.png';
 import ClientImg from '../../assets/Dashboard/Client/13.png';
@@ -10,19 +11,147 @@ import theme from '../../assets/styles/theme';
 import logoImg from '../../assets/Logo/group_2.png';
 import Icon from 'react-native-vector-icons/Feather';
 import api from '../../services/api';
-
 import { DrawerActions, useNavigation } from '@react-navigation/native';
-        
-import { AlignScheduling, AlingButton, BoxScheduling, ButtonHelpFriend, ButtonHelpMe, Calendar, Clock, ContainerImage, Content, DateScheduling, Edit, HeaderTable, Table, TextHelp, TextMoreScheduling, Title, TitleNotScheduling, Header, LogoImage, MenuButton  } from './styles';
+import { getDate, getHours, getMonth, getYear, parseISO, isAfter, subHours, getMinutes } from 'date-fns';
 
-interface AvailabilityItem {
-  specialist: {
-    crm: string;
-    
-  };
-  available: boolean;
+import { Content, AlignScheduling, AlingButton, BoxScheduling, ButtonHelpFriend, ButtonHelpMe, Calendar, Clock, ContainerImage, Container, DateScheduling, Edit, HeaderTable, Table, TextHelp, TextMoreScheduling, Title, TitleNotScheduling, Header, LogoImage, MenuButton, TextMoreSchedulingButton, NameScheduling, TopBoxScheduling, BottomBoxScheduling, ButtonStartNow, TextStartNow, Clipboard, HourScheduling, ClipboardScheduling, CalendarView, OpenDatePickerButton, OpenDatePickerButtonText  } from './styles';
+
+interface SchedulingClientItem {
+  Profissional: string;
+  id: number;
+  crmSpecialist: string;
+  date: string;
+  userId: string;
+  medicalRecordsId: number;
+  role: string;
 }
 
+interface SchedulingSpecialistItem {
+  scheduling: {
+    id: number;
+    crmSpecialist: string;
+    date: string;
+    userId: string;
+    medicalRecordsId: number;
+    role: string;
+  }
+  name: string;
+}
+
+const Dashboard: React.FC = () => {
+  const { user } = useAuth();
+  const navigation = useNavigation();
+  const navigateMenu = useCallback(() => {
+    navigation.dispatch(DrawerActions.openDrawer())
+  }, []);
+  const [schedulingClient, setSchedulingClient] = useState<SchedulingClientItem[]>([]);
+  const [schedulingSpecialist, setSchedulingSpecialist] = useState<SchedulingSpecialistItem[]>([]);
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  let dateFormatClient = 'Hoje';
+  let hourClient = '';
+
+  let dateFormatSpecialist: React.ReactNode[] = [];
+  let hourSpecialist: React.ReactNode[] = [];
+
+  const compareDate = new Date();
+
+  const usernName: React.ReactNode[] = [];
+
+
+  useEffect(() => {
+    if(user.role === 'CLIENT') {
+      api
+      .get(`/scheduling/client/${user.id}`)
+      .then((response) => {
+        setSchedulingClient(response.data);
+      });
+    } else {
+      api
+      .get(`/scheduling/specialist/${user.crm}?day=${selectedDate.getDate()}&month=${selectedDate.getMonth() + 1}&year=${selectedDate.getFullYear()}`)
+      .then((response) => {
+        setSchedulingSpecialist(response.data);
+      });
+    }
+  }, [selectedDate]);
+
+
+  if(schedulingClient.length > 0) {
+    const date = parseISO(schedulingClient[0].date);
+    const day = getDate(date);
+    const month = getMonth(date) + 1;
+    const year = getYear(date);
+    const hours = getHours(date);
+    const parseMonth = String(month).padStart(2, '0');
+    const parseDay = String(day).padStart(2, '0');
+    const parseHour = String(hours).padStart(2, '0');
+
+
+    const dayCompare = getDate(compareDate);
+    const monthCompare = getMonth(compareDate) + 1;
+    const yearCompare = getYear(compareDate);
+    const parseMonthCompare = String(monthCompare).padStart(2, '0');
+    const parseDayCompare = String(dayCompare).padStart(2, '0');
+
+    if(year === yearCompare &&  parseMonth === parseMonthCompare && parseDay === parseDayCompare) {
+      dateFormatClient = 'Hoje';
+    }else {
+      dateFormatClient = parseDay + '/' + parseMonth + '/' + year;
+    }
+
+    hourClient = `${parseHour}:00`;
+  }
+
+  if(schedulingSpecialist.length > 0) {
+
+    const date = parseISO(schedulingSpecialist[0].scheduling.date);
+    const day = getDate(date);
+    const month = getMonth(date) + 1;
+    const year = date.getFullYear();
+    const hours = getHours(date);
+    const minutes = getMinutes(date);
+    const parseMonth = String(month).padStart(2, '0');
+    const parseDay = String(day).padStart(2, '0');
+    const parseHour = String(hours).padStart(2, '0');
+    const parseMinutes = String(minutes).padStart(2, '0');
+
+    const dayCompare = getDate(compareDate);
+    const monthCompare = getMonth(compareDate) + 1;
+    const yearCompare = compareDate.getFullYear();
+    const parseMonthCompare = String(monthCompare).padStart(2, '0');
+    const parseDayCompare = String(dayCompare).padStart(2, '0');
+
+    if(year === yearCompare &&  parseMonth === parseMonthCompare && parseDay === parseDayCompare) {
+      dateFormatSpecialist.push('Hoje');
+    }else {
+      dateFormatSpecialist.push(parseDay + '/' + parseMonth + '/' + year);
+    }
+
+    hourSpecialist.push(`${parseHour}:${parseMinutes}`);
+
+    const arrayName = schedulingSpecialist[0].name.split(' ');
+
+    const name = arrayName[0] + ' ' + arrayName[arrayName.length - 1];
+
+    usernName.push(name);
+  }
+
+  const handleToggleDatePicker = useCallback(() => {
+    setShowDatePicker((state) => !state);
+  }, []);
+
+  const handleDateChanged = useCallback(
+    (event: any, date: Date | undefined) => {
+      if (Platform.OS === 'android') {
+        setShowDatePicker(false);
+      }
+
+      if (date) {
+        setSelectedDate(date);
+      }
+    },
+    [],
+        
 const Dashboard: React.FC = () => {
 const { user } = useAuth();
 const navigation = useNavigation();
@@ -48,87 +177,169 @@ useEffect(() => {
 console.log(availability)
 console.log('user', user);
 
-  return (
+ return (
     <>
-    <StatusBar barStyle="dark-content" backgroundColor='#fff' translucent />
+      <StatusBar barStyle="dark-content" backgroundColor='#fff' translucent />
 
-    <LinearGradient
-      colors={[theme.duck_egg_blue, theme.cloudy_blue]}
-      locations={[0, 0.5]}
-      style={{flex:1}}
-    >
-      <Header>
-        <MenuButton onPress={navigateMenu}>
-          <Icon name="menu" size={24} color="#fa7592" />
-        </MenuButton>
-        <LogoImage>
-          <Image source={logoImg} />
-        </LogoImage>
-      </Header>
-      <Content>
-        { user.role === 'CLIENT' ? 
-          <Table>
-            <HeaderTable>
-              <Title>Meus agendamentos</Title>
-            </HeaderTable>
-            <AlignScheduling>
-              <BoxScheduling>
-                {availability.length === 0 ? 
-                  <TitleNotScheduling>Você não possui nenhum agendamento ;)</TitleNotScheduling> 
-                :
-                <>
-                <Title>{availability[0].Profissional}</Title>
-                <Calendar>
-                  <Icon name="calendar" size={16} color="#fa7592" />
-                </Calendar>
-                <DateScheduling>{availability.dateEua}</DateScheduling>
-                <Clock>
-                  <Icon name="clock" size={16} color="#fa7592" />
-                </Clock>
-                <Edit>
-                  <Icon name="edit" size={16} color="#fa7592" />
-                </Edit>
-                </>
-                }
-              </BoxScheduling>
-            </AlignScheduling>
-            <TextMoreScheduling>ver mais</TextMoreScheduling>
-            <AlingButton>
-              <ButtonHelpFriend>
-               <ContainerImage>
-                 <Image source={FriendImg} />
-               </ContainerImage>
-               <TextHelp>Quero ajudar {'\n'}um amigo</TextHelp>
-             </ButtonHelpFriend>
-              <ButtonHelpMe>
-                <ContainerImage>
-                 <Image source={ClientImg} />
-                </ContainerImage>
-                <TextHelp>Quero uma {'\n'}ajuda</TextHelp>
-              </ButtonHelpMe>
-            </AlingButton>
-          </Table>
-         : (null)}
-     </Content>
-    </LinearGradient>
+      <LinearGradient
+        colors={[theme.duck_egg_blue, theme.cloudy_blue]}
+        locations={[0, 0.5]}
+        style={{flex:1}}
+      >
+        <Header>
+          <MenuButton onPress={navigateMenu}>
+            <Icon name="menu" size={24} color="#fa7592" />
+          </MenuButton>
+          <LogoImage>
+            <Image source={logoImg} />
+          </LogoImage>
+        </Header>
+        <Container>
+          { user.role === 'CLIENT' ?
+            <Content>
+              <Table>
+                <HeaderTable>
+                  <Title>Meus agendamentos</Title>
+                </HeaderTable>
+                <AlignScheduling>
+                  <BoxScheduling>
+                    {schedulingClient.length === 0 ?
+                      <TitleNotScheduling>Você não possui nenhum agendamento ;)</TitleNotScheduling>
+                    :
+                      <>
+                      <TopBoxScheduling>
+                          <NameScheduling>{schedulingClient[0].Profissional}</NameScheduling>
+                          {subHours(parseISO(schedulingClient[0].date), 2) <= compareDate
+                          ?
+                            (
+                              parseInt(hourClient) === getHours(compareDate) ?
+                                <ButtonStartNow onPress={() => {}}>
+                                  <TextStartNow>Começar agora</TextStartNow>
+                                </ButtonStartNow>
+                              :
+                                null
+                            )
+                          :
+                            (
+                              <Edit onPress={() => {}}>
+                                <Icon name="edit" size={16} color="#fa7592" />
+                              </Edit>
+                            )
+                          }
+
+                        </TopBoxScheduling>
+
+                        <BottomBoxScheduling>
+                          <Calendar>
+                            <Icon name="calendar" size={16} color="#fa7592" />
+                            <DateScheduling>{dateFormatClient}</DateScheduling>
+                          </Calendar>
+                          <Clock>
+                            <Icon name="clock" size={16} color="#fa7592" />
+                            <DateScheduling>{hourClient}</DateScheduling>
+                          </Clock>
+                        </BottomBoxScheduling>
+                      </>
+                    }
+                  </BoxScheduling>
+                </AlignScheduling>
+                <TextMoreSchedulingButton onPress={() => {}}>
+                  <TextMoreScheduling>ver mais</TextMoreScheduling>
+                </TextMoreSchedulingButton>
+                <AlingButton>
+                  <ButtonHelpFriend onPress={() => {}}>
+                    <ContainerImage>
+                      <Image source={FriendImg} />
+                    </ContainerImage>
+                    <TextHelp>Quero ajudar {'\n'}um amigo</TextHelp>
+                  </ButtonHelpFriend>
+                  <ButtonHelpMe onPress={() => {navigation.navigate('TriageClient')}}>
+                    <ContainerImage>
+                    <Image source={ClientImg} />
+                    </ContainerImage>
+                    <TextHelp>Quero uma {'\n'}ajuda</TextHelp>
+                  </ButtonHelpMe>
+                </AlingButton>
+              </Table>
+            </Content>
+          :
+          <>
+          <CalendarView>
+            <Title>Data escolhida: {dateFormatSpecialist[0]}</Title>
+            <OpenDatePickerButton onPress={handleToggleDatePicker}>
+            <OpenDatePickerButtonText>
+              Selecionar outra data
+            </OpenDatePickerButtonText>
+          </OpenDatePickerButton>
+
+            {showDatePicker && (
+              <DateTimePicker
+                mode="date"
+                display="calendar"
+                onChange={handleDateChanged}
+                value={selectedDate}
+              />
+            )}
+          </CalendarView>
+              <Table>
+                <HeaderTable>
+                  <Title>Agendamentos</Title>
+                </HeaderTable>
+                <AlignScheduling>
+                  {schedulingSpecialist.length === 0 ?
+                    <BoxScheduling>
+                      <TitleNotScheduling>Você não possui nenhum atendimento ;)</TitleNotScheduling>
+                    </BoxScheduling>
+                  :
+                    <BoxScheduling>
+                    <TopBoxScheduling>
+                      <NameScheduling>{usernName[0]}</NameScheduling>
+                      {subHours(parseISO(schedulingSpecialist[0].scheduling.date), 2) <= compareDate
+                      ?
+                        (
+                          getHours(parseISO(schedulingSpecialist[0].scheduling.date)) === getHours(compareDate) ?
+                            <ButtonStartNow onPress={() => {}}>
+                              <TextStartNow>Começar agora</TextStartNow>
+                            </ButtonStartNow>
+                          :
+                            null
+                        )
+                      :
+                        (
+                          <Edit onPress={() => {}}>
+                            <Icon name="edit" size={16} color="#fa7592" />
+                          </Edit>
+                        )
+                      }
+                    </TopBoxScheduling>
+
+                    <BottomBoxScheduling>
+                      <Calendar>
+                        <Icon name="calendar" size={16} color="#fa7592" />
+                        <DateScheduling>{dateFormatSpecialist[0]}</DateScheduling>
+                      </Calendar>
+                      <Clock>
+                        <Icon name="clock" size={16} color="#fa7592" />
+                        <HourScheduling>{hourSpecialist[0]}</HourScheduling>
+                      </Clock>
+                      <Clipboard onPress={() => {}}>
+                        <Icon name="clipboard" size={16} color="#fa7592" />
+                        <ClipboardScheduling>Triagem</ClipboardScheduling>
+                      </Clipboard>
+                    </BottomBoxScheduling>
+                  </BoxScheduling>
+                  }
+                </AlignScheduling>
+                <TextMoreSchedulingButton onPress={() => {}}>
+                  <TextMoreScheduling>ver mais</TextMoreScheduling>
+                </TextMoreSchedulingButton>
+              </Table>
+          </>
+          }
+      </Container>
+      </LinearGradient>
     </>
   );
 }
 
 export default Dashboard;
-function getDate(newDate: any) {
-  throw new Error('Function not implemented.');
-}
-
-function newDate(newDate: any) {
-  throw new Error('Function not implemented.');
-}
-
-function getMonth(newDate: (newDate: any) => void) {
-  throw new Error('Function not implemented.');
-}
-
-function getYear(newDate: (newDate: any) => void) {
-  throw new Error('Function not implemented.');
-}
-

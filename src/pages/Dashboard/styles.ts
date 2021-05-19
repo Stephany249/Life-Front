@@ -1,4 +1,9 @@
+import { RectButton } from 'react-native-gesture-handler';
 import styled from 'styled-components/native';
+
+export const Content = styled.ScrollView`
+`;
+
 
 export const  Header = styled.View`
   background-color: #ffff;
@@ -22,8 +27,7 @@ export const LogoImage = styled.View`
   align-items: center;
 `;
 
-
-export const Content = styled.View`
+export const Container = styled.View`
   flex:1;
   align-items: center;
   justify-content: center;
@@ -31,12 +35,11 @@ export const Content = styled.View`
 
 export const Table = styled.View`
   flex:1;
-  height: 300;
+  height: 390;
   width: 360;
   border-top-left-radius: 24;
   border-top-right-radius: 24;
   background-color: #ffff;
-  margin-top: 250;
 `;
 
 export const HeaderTable = styled.View`
@@ -52,6 +55,21 @@ export const HeaderTable = styled.View`
   justify-content: flex-start;
 `;
 
+export const TopBoxScheduling = styled.View`
+  flex: 1;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-top: 8;
+`;
+
+export const BottomBoxScheduling = styled.View`
+  flex: 1;
+  flex-direction: row;
+  justify-content: flex-start;
+  margin-top: 16;
+  margin-bottom: 8;
+`;
+
 export const Title = styled.Text`
   font-size: 20;
   line-height:26;
@@ -59,13 +77,21 @@ export const Title = styled.Text`
   color: #090b0d;
 `;
 
+export const NameScheduling = styled.Text`
+  font-size: 16;
+  line-height:20.8;
+  font-family: 'Lato_700Bold';
+  color: #090b0d;
+  margin-left: 16;
+`;
+
 export const TitleNotScheduling = styled.Text`
   font-size: 14;
   line-height: 18.2;
   font-family: 'Lato_400Regular';
   color: #090b0d;
-  padding-top: 8;
-  padding-left: 16;
+  padding-top: 28;
+  padding-left: 30;
 `;
 
 export const AlignScheduling = styled.View`
@@ -84,11 +110,8 @@ export const BoxScheduling = styled.View`
 `;
 
 export const Calendar = styled.View`
+  margin-left: 16;
   flex-direction: row;
-  padding-top: 16;
-  padding-right: 280;
-  padding-left: 16;
-  padding-bottom: 8;
 `;
 
 export const DateScheduling = styled.Text`
@@ -96,21 +119,41 @@ export const DateScheduling = styled.Text`
   line-height: 18.2;
   font-family: 'Lato_400Regular';
   color: #090b0d;
+  margin-left: 8;
+  width: 75;
 `;
 
 export const Clock = styled.View`
+  margin-left: 16;
   flex-direction: row;
-  padding-top: 16;
-  padding-right: 160;
-  padding-left: 136;
-  padding-bottom: 8;
+
 `;
 
-export const Edit = styled.View`
-  padding-top: 8;
-  padding-right: 8;
-  padding-left: 288;
-  padding-bottom: 50;
+export const HourScheduling = styled.Text`
+  font-size: 14;
+  line-height: 18.2;
+  font-family: 'Lato_400Regular';
+  color: #090b0d;
+  margin-left: 8;
+  width: 70;
+`;
+
+export const Clipboard = styled.TouchableOpacity`
+  flex-direction: row;
+`;
+
+export const ClipboardScheduling = styled.Text`
+  font-size: 14;
+  line-height: 18.2;
+  font-family: 'Lato_400Regular';
+  color: #090b0d;
+  margin-left: 8;
+  width: 80;
+  text-decoration: underline;
+`;
+
+export const Edit = styled.TouchableOpacity`
+  margin-right: 8;
 `;
 
 export const AlingButton = styled.View`
@@ -120,12 +163,12 @@ export const AlingButton = styled.View`
   margin-top: 16;
 `;
 
-export const ButtonHelpFriend = styled.View`
+export const ButtonHelpFriend = styled.TouchableOpacity`
   height: 136;
   width: 144;
   border-radius: 8;
   background-color: #7776b6;
-  margin-right: 16; 
+  margin-right: 16;
 `;
 
 export const TextHelp = styled.Text`
@@ -139,7 +182,7 @@ export const TextHelp = styled.Text`
   padding-bottom: 8;
 `;
 
-export const ButtonHelpMe = styled.View`
+export const ButtonHelpMe = styled.TouchableOpacity`
   height: 136;
   width: 144;
   border-radius: 8;
@@ -153,6 +196,8 @@ export const ContainerImage = styled.View`
   flex-direction: row-reverse;
 `;
 
+export const TextMoreSchedulingButton = styled.TouchableOpacity``;
+
 export const TextMoreScheduling = styled.Text`
   font-size: 14;
   line-height: 18.2;
@@ -165,4 +210,45 @@ export const TextMoreScheduling = styled.Text`
   padding-bottom: 16;
   padding-right: 16;
   padding-left: 280;
-  `;
+`;
+
+
+export const ButtonStartNow = styled.TouchableOpacity`
+  background-color: #2cc7cf;
+  width:128;
+  height: 40;
+  border-radius: 8;
+  justify-content: center;
+  align-items: center;
+  margin-top: -8;
+`;
+
+export const TextStartNow = styled.Text`
+  color: #fefefe;
+  font-size: 16;
+  line-height: 20.8;
+  font-family: 'Lato_700Bold';
+`;
+
+export const CalendarView = styled.View`
+  margin-top: 120;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 120;
+`;
+
+export const OpenDatePickerButton = styled(RectButton)`
+  margin-top: 25;
+  height: 50;
+  width: 200;
+  background: #b9b9d1;
+  border-radius: 8;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const OpenDatePickerButtonText = styled.Text`
+  font-family: 'Lato_700Bold';
+  font-size: 16px;
+  color: #090b0d;
+`;
