@@ -1,47 +1,51 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { View } from 'react-native';
 import TextField from '../../../components/Input';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form'
+import { Alert } from 'react-native';
 
 import Button from '../../../components/Button';
-import { useAuth } from   '../../../hooks/auth';
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from 'yup';
+import api from '../../../services/api';
+import { useNavigation } from '@react-navigation/native';
 
 type FormData = {
   email: string;
-  password: string;
 };
 
 const schema = Yup.object().shape({
   email: Yup.string()
     .email('Digite um e-mail válido')
-    .required('E-mail obrigatório'),
-  password: Yup.string().required('Senha obrigatória'),
+    .required('E-mail obrigatório')
 });
 
 const Form: React.FC = () => {
+  const navigation  = useNavigation();
+
+  const handleForgoutPassword = async (data: {email: string}) => {
+    try {
+      await api.post('users/forgot', data);
+      Alert.alert(
+        'E-mail enviado',
+        'Envio do e-mail ocorreu com sucesso',
+      );
+      navigation.goBack();
+    }catch(err){
+      Alert.alert(
+        'Erro no envio do e-mail',
+        'Ocorreu um erro ao enviar o e-mail, tente novamente',
+      );
+    }
+  }
+
   const { control, register, handleSubmit, formState: { errors } } = useForm<FormData>({
     resolver: yupResolver(schema)
   });
 
   useEffect(() => {
     register('email')
-    register('password')
   },[register])
-
-  const { signIn } = useAuth();
-
-  const onSubmit = async (data: { email: string; password: string; }) => {
-    try{
-       await signIn({
-        email: data.email,
-        password: data.password,
-      });
-    }catch(err){
-      console.log(err);
-    }
-  }
 
   return (
     <View >
@@ -60,29 +64,12 @@ const Form: React.FC = () => {
         rules={{ required: true }}
         defaultValue=""
       />
-
-      <Controller
-        control={control}
-        render={({ field: { onChange, onBlur, value } }) => (
-          <TextField
-            label={'Senha'}
-            onBlur={onBlur}
-            error={errors?.password}
-            onChangeText={(value: any) => onChange(value)}
-            value={value}
-            secureTextEntry={true}
-          />
-        )}
-        name="password"
-        rules={{ required: true }}
-        defaultValue=""
-      />
       <Button
         onPress={
-          handleSubmit(onSubmit)
+          handleSubmit(handleForgoutPassword)
         }
       >
-        Entrar
+        Enviar e-mail
       </Button>
     </View>
   )

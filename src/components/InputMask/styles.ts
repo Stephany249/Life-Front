@@ -21,15 +21,6 @@ export const Container = styled.View<ContainerProps>`
 
 `;
 
-export const TextInput = styled.TextInput`
-  flex: 1;
-  color: #000;
-  font-size: 14px;
-  font-family: 'Lato_700Bold';
-`;
-
-export const ClickIcon = styled.TouchableOpacity``;
-
 export const TextError = styled.Text`
   font-family: 'Lato_400Regular';
   font-size: 14px;

@@ -8,12 +8,15 @@ import React, {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import api from '../services/api';
+import { Alert } from 'react-native';
 
 interface User {
   id: string;
   name: string;
+  cpf: string;
+  birthday: string;
   email: string;
-  avatar_url: string;
+  avatar: string;
   role: string;
   crm: string;
 }
@@ -27,7 +30,6 @@ interface AuthState {
   user: User;
   token: string;
 }
-
 interface AuthContextData {
   user: User;
   loading: boolean;
@@ -52,7 +54,7 @@ export const AuthProvider: React.FC = ({ children }) => {
       if (token[1] && user[1]) {
         api.defaults.headers.authorization = `Bearer ${token[1]}`;
 
-        setData({ token: token[1], user: JSON.parse(user[1]) });
+        setData({ token: token[1], user: JSON.parse(user[1])});
       }
 
       setLoading(false);
@@ -71,8 +73,6 @@ export const AuthProvider: React.FC = ({ children }) => {
         password,
       });
 
-      console.log('dada', response)
-
       const { user, token } = response.data;
 
       await AsyncStorage.multiSet([
@@ -86,8 +86,13 @@ export const AuthProvider: React.FC = ({ children }) => {
         user,
         token,
       });
+
     }catch (err) {
-      console.log(err)
+      console.log(err);
+      Alert.alert(
+        'Erro na autenticação',
+        `${err.response.data.message}`
+      );
     }
   }, []);
 

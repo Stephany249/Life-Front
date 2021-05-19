@@ -4,6 +4,7 @@ import styled from 'styled-components/native';
 export const Content = styled.ScrollView`
 `;
 
+
 export const  Header = styled.View`
   background-color: #ffff;
   height: 47.9;
@@ -25,7 +26,6 @@ export const LogoImage = styled.View`
   justify-content: center;
   align-items: center;
 `;
-
 
 export const Container = styled.View`
   flex:1;
