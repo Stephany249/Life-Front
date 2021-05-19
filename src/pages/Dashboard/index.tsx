@@ -6,7 +6,6 @@ import { useAuth } from '../../hooks/auth';
 import FriendImg from '../../assets/Dashboard/Friend/7.png';
 import ClientImg from '../../assets/Dashboard/Client/13.png';
 
-import {LinearGradient} from 'expo-linear-gradient';
 import theme from '../../assets/styles/theme';
 import logoImg from '../../assets/Logo/group_2.png';
 import Icon from 'react-native-vector-icons/Feather';
@@ -151,33 +150,9 @@ const Dashboard: React.FC = () => {
       }
     },
     [],
-        
-const Dashboard: React.FC = () => {
-const { user } = useAuth();
-const navigation = useNavigation();
-const navigateMenu = useCallback(() => {
-  navigation.dispatch(DrawerActions.openDrawer())
-}, []);
-const [availability, setAvailability] = useState<AvailabilityItem[]>([]);
-const day = getDate(newDate);
-const month = getMonth(newDate);
-const year = getYear(newDate);
-const parseMonth = String(month).padStart(2, '0');
-const parseDay = String(day).padStart(2, '0');
-const dateEua = year + '-' + parseMonth + '-' +  parseDay;
+);
 
-useEffect(() => {
-  api
-    .get(`/scheduling/client/${user.id}`)
-    .then((response) => {
-      setAvailability(response.data);
-    });
-}, []);
-
-console.log(availability)
-console.log('user', user);
-
- return (
+  return (
     <>
       <StatusBar barStyle="dark-content" backgroundColor='#fff' translucent />
 
