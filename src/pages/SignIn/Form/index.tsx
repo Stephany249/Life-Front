@@ -1,8 +1,7 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import { View } from 'react-native';
 import TextField from '../../../components/Input';
-import { Controller, useForm } from 'react-hook-form'
-import { Alert } from 'react-native';
+import { Controller, useForm } from 'react-hook-form';
 
 import Button from '../../../components/Button';
 import { useAuth } from   '../../../hooks/auth';

@@ -9,13 +9,26 @@ export const Container = styled.View`
 export const Content = styled.ScrollView`
 `;
 
-export const ContainerText = styled.TouchableOpacity`
-  margin-top: 40;
-  flex:0.2;
+export const Header = styled.View`
   flex-direction: row;
+  margin-top: 40;
+`;
+
+export const LogoImage = styled.View`
+  height: 31;
+  width: 87.9;
+  justify-content: center;
+  align-items: center;
+  margin-left: 95;
+  flex: 0.65;
+`;
+
+export const ContainerText = styled.TouchableOpacity`
+  margin-bottom: 5;
   justify-content: flex-end;
   align-items: flex-start;
-  width: 340;
+  width: 87.9;
+  flex: 0.35;
 `;
 
 export const Register = styled.Text`
@@ -31,8 +44,8 @@ export const ContainerImage = styled.View`
 
 export const Table = styled.View`
   flex:1;
-  height: 392;
-  width: 360;
+  height: 400;
+  width: 100%;
   border-top-left-radius: 24;
   border-top-right-radius: 24;
   background-color: #ffff;

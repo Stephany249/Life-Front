@@ -13,8 +13,13 @@ import { Alert } from 'react-native';
 interface User {
   id: string;
   name: string;
+  cpf: string;
+  specialist: {
+    crm: string;
+  }
+  birthday: string;
   email: string;
-  avatar_url: string;
+  avatar: string;
   role: string;
 }
 
@@ -25,11 +30,18 @@ interface SignInCredencials {
 
 interface AuthState {
   user: User;
+  specialist: Specialist;
   token: string;
+}
+
+interface Specialist {
+  crm: string;
+  userId: string;
 }
 
 interface AuthContextData {
   user: User;
+  specialist: Specialist;
   loading: boolean;
   signIn(credencials: SignInCredencials): Promise<void>;
   signOut(): void;
@@ -44,15 +56,16 @@ export const AuthProvider: React.FC = ({ children }) => {
 
   useEffect(() => {
     async function loadStoragedData(): Promise<void> {
-      const [token, user] = await AsyncStorage.multiGet([
+      const [token, user, specialist] = await AsyncStorage.multiGet([
         '@Life:token',
         '@Life:user',
+        '@Life:specialist',
       ]);
 
-      if (token[1] && user[1]) {
+      if (token[1] && user[1] && specialist[1]) {
         api.defaults.headers.authorization = `Bearer ${token[1]}`;
 
-        setData({ token: token[1], user: JSON.parse(user[1]) });
+        setData({ token: token[1], user: JSON.parse(user[1]), specialist: JSON.parse(specialist[1]) });
       }
 
       setLoading(false);
@@ -71,20 +84,26 @@ export const AuthProvider: React.FC = ({ children }) => {
         password,
       });
 
-      const { user, token } = response.data;
+      const { user, specialist, token } = response.data;
+
+
+      console.log('aasss', specialist)
 
       await AsyncStorage.multiSet([
         ['@Life:token', token],
         ['@Life:user', JSON.stringify(user)],
+        ['@Life:specialist', JSON.stringify(specialist)],
       ]);
 
       api.defaults.headers.authorization = `Bearer ${token}`;
 
       setData({
         user,
+        specialist,
         token,
       });
     }catch (err) {
+      console.log(err);
       Alert.alert(
         'Erro na autenticação',
         `${err.response.data.message}`
@@ -93,7 +112,7 @@ export const AuthProvider: React.FC = ({ children }) => {
   }, []);
 
   const signOut = useCallback(async () => {
-    await AsyncStorage.multiRemove(['@Life:token', '@Life:user']);
+    await AsyncStorage.multiRemove(['@Life:token', '@Life:user', '@Life:specialist']);
 
     setData({} as AuthState);
   }, []);
@@ -104,6 +123,7 @@ export const AuthProvider: React.FC = ({ children }) => {
 
       setData({
         token: data.token,
+        specialist: data.specialist,
         user,
       });
     },
@@ -112,7 +132,7 @@ export const AuthProvider: React.FC = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user: data.user, loading, signIn, signOut, updateUser }}
+      value={{ user: data.user, specialist: data.specialist, loading, signIn, signOut, updateUser }}
     >
       {children}
     </AuthContext.Provider>

@@ -38,11 +38,10 @@ export default function App() {
   }else {
     return (
       <NavigationContainer linking={linking}>
-        <StatusBar barStyle="dark-content" backgroundColor={theme.duck_egg_blue} translucent />
-          <AppProvider>
-            <Routes />
-          </AppProvider>
-        </NavigationContainer>
+        <AppProvider>
+          <Routes />
+        </AppProvider>
+      </NavigationContainer>
     );
   }
 }

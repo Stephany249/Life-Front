@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import { View } from 'react-native';
 import { Controller, useForm } from 'react-hook-form';
 import {getDate, getMonth, getYear} from 'date-fns';
@@ -8,8 +8,9 @@ import * as Yup from 'yup';
 
 import Button from '../../../components/Button';
 import TextField from '../../../components/Input';
+import TextInputMaskComponent from '../../../components/InputMask';
 
-import { SelectButton, TextAnswers, TextQuestion } from '../styles';
+import { SelectButton, TextAnswers, TextQuestion } from './styles';
 import { yupResolver } from '@hookform/resolvers/yup';
 import api from '../../../services/api';
 import { useNavigation } from '@react-navigation/native';
@@ -48,7 +49,6 @@ const Form: React.FC = () => {
 
   const [checked, setChecked] = React.useState('CLIENT');
 
-  //Fazer integração com a API
   const onSubmit = async (data: { name: string; cpf: string; email: string; birthday: string; password: string; passwordConfirmation: string; crm: string; }) => {
     try{
       let response: any;
@@ -133,13 +133,14 @@ const Form: React.FC = () => {
       <Controller
         control={control}
         render={({ field: { onChange, onBlur, value } }) => (
-          <TextField
+          <TextInputMaskComponent
             label={'CPF'}
+            type='cpf'
             onBlur={onBlur}
             error={errors?.cpf}
             onChangeText={(value: any) => onChange(value)}
             value={value}
-            mask="999.999.999-99"
+            keyboardType="numeric"
           />
         )}
         name="cpf"
@@ -164,12 +165,14 @@ const Form: React.FC = () => {
       <Controller
         control={control}
         render={({ field: { onChange, onBlur, value } }) => (
-          <TextField
+          <TextInputMaskComponent
             label={'Data de aniversário'}
+            type="datetime"
             onBlur={onBlur}
             error={errors?.birthday}
             onChangeText={(value: any) => onChange(value)}
             value={value}
+            keyboardType="numeric"
           />
         )}
         name="birthday"
@@ -185,7 +188,7 @@ const Form: React.FC = () => {
             error={errors?.password}
             onChangeText={(value: any) => onChange(value)}
             value={value}
-            secureTextEntry={true}
+            icon={'eye-off'}
           />
         )}
         name="password"
@@ -201,7 +204,7 @@ const Form: React.FC = () => {
             error={errors?.passwordConfirmation}
             onChangeText={(value: any) => onChange(value)}
             value={value}
-            secureTextEntry={true}
+            icon={'eye-off'}
           />
         )}
         name="passwordConfirmation"
