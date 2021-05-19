@@ -46,7 +46,7 @@ const schema = Yup.object().shape({
 
 
 const Form: React.FC = () => {
-  const { user, specialist,  updateUser } = useAuth();
+  const { user,  updateUser } = useAuth();
   const [image, setImage] = useState('');
   const [nameImage, setnNameImage] = useState('');
   const [oldPassword, setOldPassword] = useState('');
@@ -277,7 +277,7 @@ const Form: React.FC = () => {
           )}
           name="crm"
           rules={{ required: true }}
-          defaultValue={specialist.crm}
+          defaultValue={user.crm}
         />
       : null}
       <Controller
