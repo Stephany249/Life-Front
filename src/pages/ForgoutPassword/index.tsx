@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 import Icon from 'react-native-vector-icons/Feather';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
-import { Alert, Image, Platform, ScrollView, View } from 'react-native';
+import { Alert, Image, Platform, ScrollView, StatusBar, View } from 'react-native';
 
 import theme from '../../assets/styles/theme';
 import collaborateImg from '../../assets/SignIn/collaborate.png';
@@ -15,6 +15,9 @@ const ForgoutPassword: React.FC = () => {
   const navigation  = useNavigation();
 
   return (
+    <>
+    <StatusBar barStyle="dark-content" backgroundColor={theme.duck_egg_blue} translucent />
+
     <LinearGradient
       colors={[theme.duck_egg_blue, theme.cloudy_blue]}
       locations={[0, 0.5]}
@@ -47,6 +50,7 @@ const ForgoutPassword: React.FC = () => {
         </Content>
       </Keyboard>
     </LinearGradient>
+    </>
   );
 }
 

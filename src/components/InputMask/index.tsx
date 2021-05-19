@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { Text } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 
-import { Container, TextInput, TextError, ClickIcon } from './styles';
+import { TextInputMask } from 'react-native-masked-text';
 
-const TextField:React.FC<any> = ({ error, icon, label, ...inputProps }) => {
+import { Container, TextError } from './styles';
+
+const TextInputMaskComponent: React.FC<any> = ({ error, icon, label, ...inputProps }) => {
   const [passwordShown, setPasswordShown] = useState(true);
   const [iconPasswordShow, setIconPasswordShow] = useState(icon)
   const togglePasswordVisiblity = () => {
@@ -20,29 +22,17 @@ const TextField:React.FC<any> = ({ error, icon, label, ...inputProps }) => {
     <>
       <Text>{label}</Text>
       <Container isErrored={!!error}>
-        {iconPasswordShow === 'eye-off' || iconPasswordShow === 'eye' ?
-          <TextInput
-            {...inputProps}
-            secureTextEntry={passwordShown}
-          />
-        :
-          <TextInput
+          <TextInputMask style={{flex:1, color: '#000', fontSize:14, fontFamily: 'Lato_700Bold' }}
           {...inputProps}
           />
-        }
 
         {!!error && <TextError>{error.message}</TextError>}
-        {iconPasswordShow === 'eye-off' || iconPasswordShow === 'eye' ?
-          <ClickIcon onPress={togglePasswordVisiblity}>
-            <Icon name={iconPasswordShow} size={24} color="#fa7592" />
-          </ClickIcon>
-        :
           <Icon name={iconPasswordShow} size={24} color="#fa7592" />
-        }
+
 
       </Container>
     </>
   );
 };
 
-export default TextField
+export default TextInputMaskComponent;

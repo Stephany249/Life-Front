@@ -1,16 +1,19 @@
-import React, { ReactNode, useEffect, useState } from 'react';
-import { Image, Text } from 'react-native';
+import React, { ReactNode, useEffect, useState, useCallback } from 'react';
+import { Image, Text, StatusBar } from 'react-native';
 import Button from '../../components/Button';
 import { useAuth } from '../../hooks/auth';
 import FriendImg from '../../assets/Dashboard/Friend/7.png';
 import ClientImg from '../../assets/Dashboard/Client/13.png';
 
-import { AlignScheduling, AlingButton, BoxScheduling, ButtonHelpFriend, ButtonHelpMe, Calendar, Clock, ContainerImage, Content, DateScheduling, Edit, HeaderTable, Table, TextHelp, TextMoreScheduling, Title, TitleNotScheduling, } from './styles';
-
 import {LinearGradient} from 'expo-linear-gradient';
 import theme from '../../assets/styles/theme';
+import logoImg from '../../assets/Logo/group_2.png';
 import Icon from 'react-native-vector-icons/Feather';
 import api from '../../services/api';
+
+import { DrawerActions, useNavigation } from '@react-navigation/native';
+        
+import { AlignScheduling, AlingButton, BoxScheduling, ButtonHelpFriend, ButtonHelpMe, Calendar, Clock, ContainerImage, Content, DateScheduling, Edit, HeaderTable, Table, TextHelp, TextMoreScheduling, Title, TitleNotScheduling, Header, LogoImage, MenuButton  } from './styles';
 
 interface AvailabilityItem {
   specialist: {
@@ -21,7 +24,11 @@ interface AvailabilityItem {
 }
 
 const Dashboard: React.FC = () => {
-const { signOut, user } = useAuth();
+const { user } = useAuth();
+const navigation = useNavigation();
+const navigateMenu = useCallback(() => {
+  navigation.dispatch(DrawerActions.openDrawer())
+}, []);
 const [availability, setAvailability] = useState<AvailabilityItem[]>([]);
 const day = getDate(newDate);
 const month = getMonth(newDate);
@@ -39,17 +46,26 @@ useEffect(() => {
 }, []);
 
 console.log(availability)
-console.log('user', user)
+console.log('user', user);
 
   return (
+    <>
+    <StatusBar barStyle="dark-content" backgroundColor='#fff' translucent />
+
     <LinearGradient
       colors={[theme.duck_egg_blue, theme.cloudy_blue]}
       locations={[0, 0.5]}
       style={{flex:1}}
     >
+      <Header>
+        <MenuButton onPress={navigateMenu}>
+          <Icon name="menu" size={24} color="#fa7592" />
+        </MenuButton>
+        <LogoImage>
+          <Image source={logoImg} />
+        </LogoImage>
+      </Header>
       <Content>
-       <Button onPress={() => signOut()}>Sair</Button>
-
         { user.role === 'CLIENT' ? 
           <Table>
             <HeaderTable>
@@ -93,10 +109,9 @@ console.log('user', user)
             </AlingButton>
           </Table>
          : (null)}
-
-
      </Content>
     </LinearGradient>
+    </>
   );
 }
 

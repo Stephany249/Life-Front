@@ -6,6 +6,7 @@ import AppRoutes from './app.routes';
 
 import { useAuth } from '../hooks/auth';
 import theme from '../assets/styles/theme';
+import DrawerRoutes from './drawer.routes';
 
 const Routes: React.FC = () => {
   const { user, loading } = useAuth();
@@ -18,7 +19,7 @@ const Routes: React.FC = () => {
     );
   }
 
-  return user ? <AppRoutes /> : <AuthRoutes />;
+  return user ? <DrawerRoutes /> : <AuthRoutes />;
 };
 
 export default Routes;

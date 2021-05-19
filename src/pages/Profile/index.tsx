@@ -1,14 +1,15 @@
+import { useNavigation } from '@react-navigation/native';
 import React, { useCallback } from 'react';
-
-import { Content, Container, Title, SubTitle, HeaderTable, BackButton, Header, LogoImage } from './styles';
+import { Image, StatusBar } from 'react-native';
+import Icon from 'react-native-vector-icons/Feather';
 
 import Form from './Form';
-import Icon from 'react-native-vector-icons/Feather';
-import logoImg from '../../assets/Logo/group_2.png';
-import { useNavigation } from '@react-navigation/native';
-import { Image, StatusBar } from 'react-native';
 
-const SignUp: React.FC = () => {
+import logoImg from '../../assets/Logo/group_2.png';
+
+import { Content, Container, Header, BackButton, LogoImage, HeaderTable, Title } from './styles';
+
+const Profile: React.FC = () => {
   const { goBack } = useNavigation();
   const navigateBack = useCallback(() => {
     goBack();
@@ -28,15 +29,14 @@ const SignUp: React.FC = () => {
               <Image source={logoImg} />
           </LogoImage>
         </Header>
-          <HeaderTable>
-           <Title>Que bom ter você por aqui! {'\n'}</Title>
-           <SubTitle>Cadastre-se e inicie essa jornada conosco ;)</SubTitle>
+        <HeaderTable>
+           <Title>Perfil</Title>
            <Form/>
-          </HeaderTable>
+        </HeaderTable>
       </Container>
     </Content>
     </>
   );
 }
 
-export default SignUp;
+export default Profile;
