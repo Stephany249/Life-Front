@@ -1,11 +1,10 @@
 import styled from 'styled-components/native';
 
-export const Content = styled.ScrollView`
-`;
+export const Content = styled.ScrollView``;
 
 export const Container = styled.View`
   flex: 1;
-  background: #FFF;
+  background: #fff;
 `;
 
 export const Header = styled.View`

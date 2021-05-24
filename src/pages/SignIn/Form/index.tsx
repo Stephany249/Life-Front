@@ -1,12 +1,15 @@
+/* eslint-disable no-shadow */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable no-use-before-define */
 import React, { useEffect } from 'react';
 import { View } from 'react-native';
-import TextField from '../../../components/Input';
 import { Controller, useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as Yup from 'yup';
+import TextField from '../../../components/Input';
 
 import Button from '../../../components/Button';
-import { useAuth } from   '../../../hooks/auth';
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as Yup from 'yup';
+import { useAuth } from '../../../hooks/auth';
 
 type FormData = {
   email: string;
@@ -21,35 +24,43 @@ const schema = Yup.object().shape({
 });
 
 const Form: React.FC = () => {
-  const { control, register, handleSubmit, formState: { errors } } = useForm<FormData>({
-    resolver: yupResolver(schema)
+  const {
+    control,
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>({
+    resolver: yupResolver(schema),
   });
 
   useEffect(() => {
-    register('email')
-    register('password')
-  },[register])
+    register('email');
+    register('password');
+  }, [register]);
 
   const { signIn } = useAuth();
 
-  const onSubmit = async (data: { email: string; password: string; }) => {
-    try{
-       await signIn({
+  const onSubmit = async (data: {
+    email: string;
+    password: string;
+  }): Promise<any> => {
+    try {
+      await signIn({
         email: data.email,
         password: data.password,
       });
-    }catch(err){
+    } catch (err) {
       console.log(err);
     }
-  }
+  };
 
   return (
-    <View >
+    <View>
       <Controller
         control={control}
         render={({ field: { onChange, onBlur, value } }) => (
           <TextField
-            label={'E-mail'}
+            label="E-mail"
             onBlur={onBlur}
             error={errors?.email}
             onChangeText={(value: any) => onChange(value)}
@@ -65,27 +76,21 @@ const Form: React.FC = () => {
         control={control}
         render={({ field: { onChange, onBlur, value } }) => (
           <TextField
-            label={'Senha'}
+            label="Senha"
             onBlur={onBlur}
             error={errors?.password}
             onChangeText={(value: any) => onChange(value)}
             value={value}
-            secureTextEntry={true}
+            secureTextEntry
           />
         )}
         name="password"
         rules={{ required: true }}
         defaultValue=""
       />
-      <Button
-        onPress={
-          handleSubmit(onSubmit)
-        }
-      >
-        Entrar
-      </Button>
+      <Button onPress={handleSubmit(onSubmit)}>Entrar</Button>
     </View>
-  )
-}
+  );
+};
 
 export default Form;

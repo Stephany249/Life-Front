@@ -1,11 +1,10 @@
 import styled from 'styled-components/native';
 
 export const Keyboard = styled.KeyboardAvoidingView`
-flex: 1;
+  flex: 1;
 `;
 
-export const Content = styled.ScrollView`
-`;
+export const Content = styled.ScrollView``;
 
 export const Container = styled.View`
   flex: 1;
@@ -14,12 +13,10 @@ export const Container = styled.View`
 `;
 
 export const ContainerImage = styled.View`
-  flex:1;
+  flex: 1;
 `;
 
 export const Table = styled.View`
-  flex:1;
-  height: 410;
   width: 360;
   border-top-left-radius: 24;
   border-top-right-radius: 24;
@@ -36,14 +33,14 @@ export const HeaderTable = styled.View`
 
 export const Title = styled.Text`
   font-size: 20;
-  line-height:26;
+  line-height: 26;
   font-family: 'Lato_700Bold';
   color: #2cc7cf;
 `;
 
 export const SubTitle = styled.Text`
   font-size: 16;
-  line-height:20;
+  line-height: 20;
   font-family: 'Lato_700Bold';
   color: #b4b5b6;
 `;

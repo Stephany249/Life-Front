@@ -1,8 +1,11 @@
 import React from 'react';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import Profile from '../pages/Profile';
-import AppRoutes from './app.routes';
 import CustomDrawerContent from '../components/CustomDrawerContent';
+
+import AppRoutes from './app.routes';
+
+import Profile from '../pages/Profile';
+import OpeningHours from '../pages/OpeningHours';
 
 const Drawer = createDrawerNavigator();
 
@@ -18,6 +21,7 @@ const DrawerRoutes: React.FC = () =>{
     >
       <Drawer.Screen name ="Home" component={AppRoutes}  />
       <Drawer.Screen name="Profile" component={Profile} />
+      <Drawer.Screen name="OpeningHours" component={OpeningHours} />
     </Drawer.Navigator>
   )
 };

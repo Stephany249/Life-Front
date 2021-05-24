@@ -1,19 +1,66 @@
+/* eslint-disable no-nested-ternary */
+/* eslint-disable radix */
+/* eslint-disable @typescript-eslint/no-empty-function */
+/* eslint-disable no-use-before-define */
 import React, { useEffect, useState, useCallback } from 'react';
-import { Image, Text, Platform, StatusBar } from 'react-native';
-import {LinearGradient} from 'expo-linear-gradient';
+import { Image, Platform, StatusBar } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import Icon from 'react-native-vector-icons/Feather';
+import { DrawerActions, useNavigation } from '@react-navigation/native';
+import {
+  getDate,
+  getHours,
+  getMonth,
+  getYear,
+  parseISO,
+  subHours,
+  getMinutes,
+} from 'date-fns';
 import { useAuth } from '../../hooks/auth';
 import FriendImg from '../../assets/Dashboard/Friend/7.png';
 import ClientImg from '../../assets/Dashboard/Client/13.png';
 
 import theme from '../../assets/styles/theme';
 import logoImg from '../../assets/Logo/group_2.png';
-import Icon from 'react-native-vector-icons/Feather';
 import api from '../../services/api';
-import { DrawerActions, useNavigation } from '@react-navigation/native';
-import { getDate, getHours, getMonth, getYear, parseISO, isAfter, subHours, getMinutes } from 'date-fns';
 
-import { Content, AlignScheduling, AlingButton, BoxScheduling, ButtonHelpFriend, ButtonHelpMe, Calendar, Clock, ContainerImage, Container, DateScheduling, Edit, HeaderTable, Table, TextHelp, TextMoreScheduling, Title, TitleNotScheduling, Header, LogoImage, MenuButton, TextMoreSchedulingButton, NameScheduling, TopBoxScheduling, BottomBoxScheduling, ButtonStartNow, TextStartNow, Clipboard, HourScheduling, ClipboardScheduling, CalendarView, OpenDatePickerButton, OpenDatePickerButtonText, TableClient  } from './styles';
+import {
+  Content,
+  AlignScheduling,
+  AlingButton,
+  BoxScheduling,
+  ButtonHelpFriend,
+  ButtonHelpMe,
+  Calendar,
+  Clock,
+  ContainerImage,
+  Container,
+  DateScheduling,
+  Edit,
+  HeaderTable,
+  Table,
+  TextHelp,
+  TextMoreScheduling,
+  Title,
+  TitleNotScheduling,
+  Header,
+  LogoImage,
+  MenuButton,
+  TextMoreSchedulingButton,
+  NameScheduling,
+  TopBoxScheduling,
+  BottomBoxScheduling,
+  ButtonStartNow,
+  TextStartNow,
+  Clipboard,
+  HourScheduling,
+  ClipboardScheduling,
+  CalendarView,
+  OpenDatePickerButton,
+  OpenDatePickerButtonText,
+  TableClient,
+} from './styles';
 
 interface SchedulingClientItem {
   Profissional: string;
@@ -33,7 +80,7 @@ interface SchedulingSpecialistItem {
     userId: string;
     medicalRecordsId: number;
     role: string;
-  }
+  };
   name: string;
 }
 
@@ -41,41 +88,50 @@ const Dashboard: React.FC = () => {
   const { user } = useAuth();
   const navigation = useNavigation();
   const navigateMenu = useCallback(() => {
-    navigation.dispatch(DrawerActions.openDrawer())
-  }, []);
-  const [schedulingClient, setSchedulingClient] = useState<SchedulingClientItem[]>([]);
-  const [schedulingSpecialist, setSchedulingSpecialist] = useState<SchedulingSpecialistItem[]>([]);
-  const [selectedDate, setSelectedDate] = useState(new Date());
+    navigation.dispatch(DrawerActions.openDrawer());
+  }, [navigation]);
+  const [schedulingClient, setSchedulingClient] = useState<
+    SchedulingClientItem[]
+  >([]);
+  const [schedulingSpecialist, setSchedulingSpecialist] = useState<
+    SchedulingSpecialistItem[]
+  >([]);
+  const [selectedDate, setSelectedDate] = useState(new Date(Date.now()));
   const [showDatePicker, setShowDatePicker] = useState(false);
   let dateFormatClient = 'Hoje';
   let hourClient = '';
 
-  let dateFormatSpecialist: React.ReactNode[] = [];
-  let hourSpecialist: React.ReactNode[] = [];
+  const dateFormatSpecialist: React.ReactNode[] = [];
+  const hourSpecialist: React.ReactNode[] = [];
 
-  const compareDate = new Date();
+  const compareDate = new Date(Date.now());
+
+  console.log(compareDate, selectedDate);
 
   const usernName: React.ReactNode[] = [];
 
-
   useEffect(() => {
-    if(user.role === 'CLIENT') {
-      api
-      .get(`/scheduling/client/${user.id}`)
-      .then((response) => {
+    if (user.role === 'CLIENT') {
+      api.get(`/scheduling/client/${user.id}`).then((response) => {
         setSchedulingClient(response.data);
       });
     } else {
+      console.log('lala', selectedDate);
       api
-      .get(`/scheduling/specialist/${user.crm}?day=${selectedDate.getDate()}&month=${selectedDate.getMonth() + 1}&year=${selectedDate.getFullYear()}`)
-      .then((response) => {
-        setSchedulingSpecialist(response.data);
-      });
+        .get(
+          `/scheduling/specialist/${
+            user.crm
+          }?day=${selectedDate.getDate()}&month=${
+            selectedDate.getMonth() + 1
+          }&year=${selectedDate.getFullYear()}`,
+        )
+        .then((response) => {
+          setSchedulingSpecialist(response.data);
+        });
     }
-  }, [selectedDate]);
+  }, [selectedDate, user.crm, user.id, user.role]);
 
-
-  if(schedulingClient.length > 0) {
+  if (schedulingClient.length > 0) {
     const date = parseISO(schedulingClient[0].date);
     const day = getDate(date);
     const month = getMonth(date) + 1;
@@ -85,24 +141,26 @@ const Dashboard: React.FC = () => {
     const parseDay = String(day).padStart(2, '0');
     const parseHour = String(hours).padStart(2, '0');
 
-
     const dayCompare = getDate(compareDate);
     const monthCompare = getMonth(compareDate) + 1;
     const yearCompare = getYear(compareDate);
     const parseMonthCompare = String(monthCompare).padStart(2, '0');
     const parseDayCompare = String(dayCompare).padStart(2, '0');
 
-    if(year === yearCompare &&  parseMonth === parseMonthCompare && parseDay === parseDayCompare) {
+    if (
+      year === yearCompare &&
+      parseMonth === parseMonthCompare &&
+      parseDay === parseDayCompare
+    ) {
       dateFormatClient = 'Hoje';
-    }else {
-      dateFormatClient = parseDay + '/' + parseMonth + '/' + year;
+    } else {
+      dateFormatClient = `${parseDay}/${parseMonth}/${year}`;
     }
 
     hourClient = `${parseHour}:00`;
   }
 
-  if(schedulingSpecialist.length > 0) {
-
+  if (schedulingSpecialist.length > 0) {
     const date = parseISO(schedulingSpecialist[0].scheduling.date);
     const day = getDate(date);
     const month = getMonth(date) + 1;
@@ -120,20 +178,26 @@ const Dashboard: React.FC = () => {
     const parseMonthCompare = String(monthCompare).padStart(2, '0');
     const parseDayCompare = String(dayCompare).padStart(2, '0');
 
-    if(year === yearCompare &&  parseMonth === parseMonthCompare && parseDay === parseDayCompare) {
+    if (
+      year === yearCompare &&
+      parseMonth === parseMonthCompare &&
+      parseDay === parseDayCompare
+    ) {
       dateFormatSpecialist.push('Hoje');
-    }else {
-      dateFormatSpecialist.push(parseDay + '/' + parseMonth + '/' + year);
+    } else {
+      dateFormatSpecialist.push(`${parseDay}/${parseMonth}/${year}`);
     }
 
     hourSpecialist.push(`${parseHour}:${parseMinutes}`);
 
     const arrayName = schedulingSpecialist[0].name.split(' ');
 
-    const name = arrayName[0] + ' ' + arrayName[arrayName.length - 1];
+    const name = `${arrayName[0]} ${arrayName[arrayName.length - 1]}`;
 
     usernName.push(name);
   }
+
+  console.log(dateFormatSpecialist);
 
   const handleToggleDatePicker = useCallback(() => {
     setShowDatePicker((state) => !state);
@@ -150,16 +214,16 @@ const Dashboard: React.FC = () => {
       }
     },
     [],
-);
+  );
 
   return (
     <>
-      <StatusBar barStyle="dark-content" backgroundColor='#fff' translucent />
+      <StatusBar barStyle="dark-content" backgroundColor="#fff" translucent />
 
       <LinearGradient
         colors={[theme.duck_egg_blue, theme.cloudy_blue]}
         locations={[0, 0.5]}
-        style={{flex:1}}
+        style={{ flex: 1 }}
       >
         <Header>
           <MenuButton onPress={navigateMenu}>
@@ -170,7 +234,7 @@ const Dashboard: React.FC = () => {
           </LogoImage>
         </Header>
         <Container>
-          { user.role === 'CLIENT' ?
+          {user.role === 'CLIENT' ? (
             <Content>
               <TableClient>
                 <HeaderTable>
@@ -178,30 +242,28 @@ const Dashboard: React.FC = () => {
                 </HeaderTable>
                 <AlignScheduling>
                   <BoxScheduling>
-                    {schedulingClient.length === 0 ?
-                      <TitleNotScheduling>Você não possui nenhum agendamento ;)</TitleNotScheduling>
-                    :
+                    {schedulingClient.length === 0 ? (
+                      <TitleNotScheduling>
+                        Você não possui nenhum agendamento
+                      </TitleNotScheduling>
+                    ) : (
                       <>
-                      <TopBoxScheduling>
-                          <NameScheduling>{schedulingClient[0].Profissional}</NameScheduling>
-                          {subHours(parseISO(schedulingClient[0].date), 2) <= compareDate
-                          ?
-                            (
-                              parseInt(hourClient) === getHours(compareDate) ?
-                                <ButtonStartNow onPress={() => {}}>
-                                  <TextStartNow>Começar agora</TextStartNow>
-                                </ButtonStartNow>
-                              :
-                                null
-                            )
-                          :
-                            (
-                              <Edit onPress={() => {}}>
-                                <Icon name="edit" size={16} color="#fa7592" />
-                              </Edit>
-                            )
-                          }
-
+                        <TopBoxScheduling>
+                          <NameScheduling>
+                            {schedulingClient[0].Profissional}
+                          </NameScheduling>
+                          {subHours(parseISO(schedulingClient[0].date), 2) <=
+                          compareDate ? (
+                            parseInt(hourClient) === getHours(compareDate) ? (
+                              <ButtonStartNow onPress={() => {}}>
+                                <TextStartNow>Começar agora</TextStartNow>
+                              </ButtonStartNow>
+                            ) : null
+                          ) : (
+                            <Edit onPress={() => {}}>
+                              <Icon name="edit" size={16} color="#fa7592" />
+                            </Edit>
+                          )}
                         </TopBoxScheduling>
 
                         <BottomBoxScheduling>
@@ -215,7 +277,7 @@ const Dashboard: React.FC = () => {
                           </Clock>
                         </BottomBoxScheduling>
                       </>
-                    }
+                    )}
                   </BoxScheduling>
                 </AlignScheduling>
                 <TextMoreSchedulingButton onPress={() => {}}>
@@ -228,93 +290,110 @@ const Dashboard: React.FC = () => {
                     </ContainerImage>
                     <TextHelp>Quero ajudar {'\n'}um amigo</TextHelp>
                   </ButtonHelpFriend>
+
                   <ButtonHelpMe onPress={() => {navigation.navigate('FirstTriage')}}>
+
                     <ContainerImage>
-                    <Image source={ClientImg} />
+                      <Image source={ClientImg} />
                     </ContainerImage>
                     <TextHelp>Quero uma {'\n'}ajuda</TextHelp>
                   </ButtonHelpMe>
                 </AlingButton>
               </TableClient>
             </Content>
-          :
-          <>
-          <CalendarView>
-            <Title>Data escolhida: {dateFormatSpecialist[0]}</Title>
-            <OpenDatePickerButton onPress={handleToggleDatePicker}>
-            <OpenDatePickerButtonText>
-              Selecionar outra data
-            </OpenDatePickerButtonText>
-          </OpenDatePickerButton>
+          ) : (
+            <>
+              <CalendarView>
+                <Title>
+                  Data escolhida:{' '}
+                  {`${String(getDate(selectedDate)).padStart(2, '0')}/${String(
+                    getMonth(selectedDate),
+                  ).padStart(2, '0')}/${getYear(selectedDate)}`}
+                </Title>
+                <OpenDatePickerButton onPress={handleToggleDatePicker}>
+                  <OpenDatePickerButtonText>
+                    Selecionar outra data
+                  </OpenDatePickerButtonText>
+                </OpenDatePickerButton>
 
-            {showDatePicker && (
-              <DateTimePicker
-                mode="date"
-                display="calendar"
-                onChange={handleDateChanged}
-                value={selectedDate}
-              />
-            )}
-          </CalendarView>
+                {showDatePicker && (
+                  <DateTimePicker
+                    mode="date"
+                    display="calendar"
+                    onChange={handleDateChanged}
+                    value={selectedDate}
+                  />
+                )}
+              </CalendarView>
               <Table>
                 <HeaderTable>
                   <Title>Agendamentos</Title>
                 </HeaderTable>
                 <AlignScheduling>
-                  {schedulingSpecialist.length === 0 ?
+                  {schedulingSpecialist.length === 0 ? (
                     <BoxScheduling>
-                      <TitleNotScheduling>Você não possui nenhum atendimento ;)</TitleNotScheduling>
+                      <TitleNotScheduling>
+                        Você não possui nenhum atendimento ;)
+                      </TitleNotScheduling>
                     </BoxScheduling>
-                  :
+                  ) : (
                     <BoxScheduling>
-                    <TopBoxScheduling>
-                      <NameScheduling>{usernName[0]}</NameScheduling>
-                      {subHours(parseISO(schedulingSpecialist[0].scheduling.date), 2) <= compareDate
-                      ?
-                        (
-                          getHours(parseISO(schedulingSpecialist[0].scheduling.date)) === getHours(compareDate) ?
+                      <TopBoxScheduling>
+                        <NameScheduling>{usernName[0]}</NameScheduling>
+                        {subHours(
+                          parseISO(schedulingSpecialist[0].scheduling.date),
+                          2,
+                        ) <= compareDate ? (
+                          getHours(
+                            parseISO(schedulingSpecialist[0].scheduling.date),
+                          ) === getHours(compareDate) ? (
                             <ButtonStartNow onPress={() => {}}>
                               <TextStartNow>Começar agora</TextStartNow>
                             </ButtonStartNow>
-                          :
-                            null
-                        )
-                      :
-                        (
+                          ) : null
+                        ) : (
                           <Edit onPress={() => {}}>
                             <Icon name="edit" size={16} color="#fa7592" />
                           </Edit>
-                        )
-                      }
-                    </TopBoxScheduling>
+                        )}
+                      </TopBoxScheduling>
 
-                    <BottomBoxScheduling>
-                      <Calendar>
-                        <Icon name="calendar" size={16} color="#fa7592" />
-                        <DateScheduling>{dateFormatSpecialist[0]}</DateScheduling>
-                      </Calendar>
-                      <Clock>
-                        <Icon name="clock" size={16} color="#fa7592" />
-                        <HourScheduling>{hourSpecialist[0]}</HourScheduling>
-                      </Clock>
-                      <Clipboard onPress={() => {}}>
-                        <Icon name="clipboard" size={16} color="#fa7592" />
-                        <ClipboardScheduling>Triagem</ClipboardScheduling>
-                      </Clipboard>
-                    </BottomBoxScheduling>
-                  </BoxScheduling>
-                  }
+                      <BottomBoxScheduling>
+                        <Calendar>
+                          <Icon name="calendar" size={16} color="#fa7592" />
+                          <DateScheduling>
+                            {dateFormatSpecialist[0]}
+                          </DateScheduling>
+                        </Calendar>
+                        <Clock>
+                          <Icon name="clock" size={16} color="#fa7592" />
+                          <HourScheduling>{hourSpecialist[0]}</HourScheduling>
+                        </Clock>
+                        <Clipboard onPress={() => {}}>
+                          <Icon name="clipboard" size={16} color="#fa7592" />
+                          <ClipboardScheduling>Triagem</ClipboardScheduling>
+                        </Clipboard>
+                      </BottomBoxScheduling>
+                    </BoxScheduling>
+                  )}
                 </AlignScheduling>
-                <TextMoreSchedulingButton onPress={() => {}}>
-                  <TextMoreScheduling>ver mais</TextMoreScheduling>
-                </TextMoreSchedulingButton>
+                {`${String(getDate(compareDate)).padStart(2, '0')}/${String(
+                  getMonth(compareDate),
+                ).padStart(2, '0')}/${getYear(compareDate)}` <=
+                `${String(getDate(selectedDate)).padStart(2, '0')}/${String(
+                  getMonth(selectedDate),
+                ).padStart(2, '0')}/${getYear(selectedDate)}` ? (
+                  <TextMoreSchedulingButton onPress={() => {}}>
+                    <TextMoreScheduling>ver mais</TextMoreScheduling>
+                  </TextMoreSchedulingButton>
+                ) : null}
               </Table>
-          </>
-          }
-      </Container>
+            </>
+          )}
+        </Container>
       </LinearGradient>
     </>
   );
-}
+};
 
 export default Dashboard;
