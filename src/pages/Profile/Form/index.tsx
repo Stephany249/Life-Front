@@ -1,27 +1,28 @@
+/* eslint-disable no-shadow */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable no-use-before-define */
 import React, { useCallback, useEffect, useState } from 'react';
-import { Platform, Text, View } from 'react-native';
+import { Platform, View } from 'react-native';
 import { Controller, useForm } from 'react-hook-form';
-import {getDate, getMonth, getYear, parseISO} from 'date-fns';
+import { getDate, getMonth, getYear, parseISO } from 'date-fns';
 import { Alert } from 'react-native';
 import * as Yup from 'yup';
 
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as ImagePicker from 'expo-image-picker';
+import IconFontAwesome from 'react-native-vector-icons/FontAwesome';
 import Button from '../../../components/Button';
 import TextField from '../../../components/Input';
 import TextInputMaskComponent from '../../../components/InputMask';
 
-import { yupResolver } from '@hookform/resolvers/yup';
 import api from '../../../services/api';
-import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../../../hooks/auth';
 
-import * as ImagePicker from 'expo-image-picker';
-
-import {User, UserAvatar, ChangePhoto, ChangePhotoText} from './styles';
-
+import { User, UserAvatar, ChangePhoto, ChangePhotoText } from './styles';
 
 type FormData = {
   name: string;
-  cpf:string;
+  cpf: string;
   email: string;
   birthday: string;
   oldPassword: string;
@@ -40,42 +41,43 @@ const schema = Yup.object().shape({
   newPassword: Yup.string().when('oldPassword', {
     is: (val: string | any[]) => !!val.length,
     then: Yup.string().required('Nova senha é obrigatória'),
-    otherwise: Yup.string()
-  })
+    otherwise: Yup.string(),
+  }),
 });
 
-
 const Form: React.FC = () => {
-  const { user,  updateUser } = useAuth();
+  const { user, updateUser } = useAuth();
   const [image, setImage] = useState('');
   const [nameImage, setnNameImage] = useState('');
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
-  const name = user.name;
+  const { name } = user;
 
   const newData = parseISO(user.birthday);
-  const day = getDate(newData);
+  const day = getDate(newData) + 1;
   const month = getMonth(newData) + 1;
   const year = getYear(newData);
   const parseMonth = String(month).padStart(2, '0');
   const parseDay = String(day).padStart(2, '0');
 
-  const birthday = parseDay + '/' + parseMonth + '/' + year;
+  const birthday = `${parseDay}/${parseMonth}/${year}`;
 
-
-  const navigation  = useNavigation();
-  const { control, register, handleSubmit, formState: { errors } } = useForm<FormData>({
-    resolver: yupResolver(schema)
+  const {
+    control,
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>({
+    resolver: yupResolver(schema),
   });
-
-  console.log(user);
 
   const handleUpdateAvatar = useCallback(async () => {
     if (Platform.OS !== 'web') {
-      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      const {
+        status,
+      } = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
-
-      let result = await ImagePicker.launchImageLibraryAsync({
+      const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.All,
         allowsEditing: true,
         aspect: [4, 3],
@@ -84,60 +86,58 @@ const Form: React.FC = () => {
 
       if (!result.cancelled) {
         const arrayImage = result.uri.split('/');
-        const nameImage = arrayImage[arrayImage.length - 1];
-        console.log('Nome imagem', nameImage, result.uri);
+        const nameImages = arrayImage[arrayImage.length - 1];
 
-        setnNameImage(nameImage)
+        setnNameImage(nameImages);
         setImage(result.uri);
       }
 
-      console.log(image, nameImage);
-
-      if(image !== '' && nameImage !== '') {
+      if (image !== '' && nameImage !== '') {
         const data = new FormData();
 
-        user.append('file', {
+        data.append('file', {
           type: 'image/jpeg',
           name: `${nameImage}`,
           uri: image,
         });
 
-        console.log('Foto data', data);
-
         api.patch(`/users/avatar/${user.id}`, data).then((apiResponse) => {
           updateUser(apiResponse.data);
         });
-      }else {
+      } else {
         Alert.alert('Erro ao atualizar sua foto de perfil');
-
       }
 
       if (status !== 'granted') {
-        Alert.alert('Precisamos de permissões de rolo da câmera para fazer isso funcionar!');
+        Alert.alert(
+          'Precisamos de permissões de rolo da câmera para fazer isso funcionar!',
+        );
       }
     }
-
-  }, [user.id, updateUser]);
+  }, [image, nameImage, user.id, updateUser]);
 
   const handleProfile = useCallback(
     async (data: FormData) => {
       try {
-        console.log(data);
         await schema.validate(data, {
           abortEarly: false,
         });
 
         const splitData = data.birthday.split('/');
-        const newDate = new Date(parseInt(splitData[2]), parseInt(splitData[1]), parseInt(splitData[0]));
+        const newDate = new Date(
+          parseInt(splitData[2], 10),
+          parseInt(splitData[1], 10),
+          parseInt(splitData[0], 10),
+        );
 
-        const day = getDate(newDate);
-        const month = getMonth(newDate);
-        const year = getYear(newDate);
+        const daySplitData = getDate(newDate) - 1;
+        const monthSplitData = getMonth(newDate);
+        const yearSplitData = getYear(newDate);
 
-        const parseMonth = String(month).padStart(2, '0');
-        const parseDay = String(day).padStart(2, '0');
+        const parseMonthSplitData = String(monthSplitData).padStart(2, '0');
+        const parseDaySplitData = String(daySplitData).padStart(2, '0');
 
-        const dateEua = year + '-' + parseMonth + '-' +  parseDay;
+        const dateEua = `${yearSplitData}-${parseMonthSplitData}-${parseDaySplitData}`;
 
         const formData = {
           name: data.name,
@@ -151,14 +151,14 @@ const Form: React.FC = () => {
             : {}),
         };
 
-        console.log(formData);
-
         const response = await api.put(`/users/profile/${user.id}`, formData);
 
         updateUser(response.data);
 
         Alert.alert('Perfil atualizado com sucesso!');
 
+        setOldPassword('');
+        setNewPassword('');
       } catch (err) {
         Alert.alert(
           'Erro na atualização do perfil',
@@ -166,43 +166,51 @@ const Form: React.FC = () => {
         );
       }
     },
-    [updateUser],
+    [updateUser, user.id],
   );
 
   useEffect(() => {
-    register('name')
-    register('cpf')
-    register('email')
-    register('birthday')
-    register('oldPassword')
-    register('newPassword')
-    register('crm')
-  },[register])
+    register('name');
+    register('cpf');
+    register('email');
+    register('birthday');
+    register('oldPassword');
+    register('newPassword');
+    register('crm');
+  }, [register]);
 
   return (
     <View>
       <User>
-        <UserAvatar
-          source={{
-            uri:
-              user.avatar ||
-              `https://ui-avatars.com/api/?name=${name.replace(' ', '%20')}&background=fa7592&color=fff&size=128`,
-          }}
-        />
+        {user.avatar ? (
+          <UserAvatar
+            source={{
+              uri:
+                user.avatar ||
+                `https://ui-avatars.com/api/?name=${name.replace(
+                  ' ',
+                  '%20',
+                )}&background=fa7592&color=fff&size=128`,
+            }}
+          />
+        ) : (
+          <IconFontAwesome name="user-circle-o" color="#fa7592" size={72} />
+        )}
+
         <ChangePhoto onPress={handleUpdateAvatar}>
           <ChangePhotoText>Alterar foto</ChangePhotoText>
         </ChangePhoto>
       </User>
-       <Controller
+      <Controller
         control={control}
         render={({ field: { onChange, onBlur, value } }) => (
           <TextField
-            label={'Nome'}
+            label="Nome"
             onBlur={onBlur}
             error={errors?.name}
             onChangeText={(value: any) => onChange(value)}
             value={value}
-            icon={'edit-2'}
+            icon="edit-2"
           />
         )}
         name="name"
@@ -213,15 +221,14 @@ const Form: React.FC = () => {
         control={control}
         render={({ field: { onChange, onBlur, value } }) => (
           <TextInputMaskComponent
-            label={'CPF'}
-            type='cpf'
+            label="CPF"
+            type="cpf"
             onBlur={onBlur}
             error={errors?.cpf}
             value={value}
             keyboardType="numeric"
             editable={false}
           />
-
         )}
         name="cpf"
         rules={{ required: true }}
@@ -231,13 +238,13 @@ const Form: React.FC = () => {
         control={control}
         render={({ field: { onChange, onBlur, value } }) => (
           <TextField
-            label={'E-mail'}
+            label="E-mail"
             autoCapitalize="none"
             onBlur={onBlur}
             error={errors?.email}
             onChangeText={(value: any) => onChange(value)}
             value={value}
-            icon={'edit-2'}
+            icon="edit-2"
           />
         )}
         name="email"
@@ -248,26 +255,26 @@ const Form: React.FC = () => {
         control={control}
         render={({ field: { onChange, onBlur, value } }) => (
           <TextInputMaskComponent
-            label={'Data de aniversário'}
+            label="Data de aniversário"
             type="datetime"
             onBlur={onBlur}
             error={errors?.birthday}
             keyboardType="numeric"
             onChangeText={(value: any) => onChange(value)}
             value={value}
-            icon={'edit-2'}
+            icon="edit-2"
           />
         )}
         name="birthday"
         rules={{ required: true }}
         defaultValue={birthday}
       />
-      {user.role === 'SPECIALIST' ?
+      {user.role === 'SPECIALIST' ? (
         <Controller
           control={control}
           render={({ field: { onChange, onBlur, value } }) => (
             <TextField
-              label={'CRM'}
+              label="CRM"
               onBlur={onBlur}
               error={errors?.crm}
               onChangeText={(value: any) => onChange(value)}
@@ -279,48 +286,42 @@ const Form: React.FC = () => {
           rules={{ required: true }}
           defaultValue={user.crm}
         />
-      : null}
+      ) : null}
       <Controller
         control={control}
         render={({ field: { onChange, onBlur, value } }) => (
           <TextField
-            label={'Senha atual'}
+            label="Senha atual"
             onBlur={onBlur}
             error={errors?.oldPassword}
             onChangeText={(value: any) => onChange(value)}
             value={value}
-            icon={'eye-off'}
+            icon="eye-off"
           />
         )}
         name="oldPassword"
         rules={{ required: true }}
-        defaultValue={oldPassword}
+        defaultValue=""
       />
-       <Controller
+      <Controller
         control={control}
         render={({ field: { onChange, onBlur, value } }) => (
           <TextField
-            label={'Nova Senha'}
+            label="Nova Senha"
             onBlur={onBlur}
             error={errors?.newPassword}
             onChangeText={(value: any) => onChange(value)}
             value={value}
-            icon={'eye-off'}
+            icon="eye-off"
           />
         )}
         name="newPassword"
         rules={{ required: true }}
         defaultValue=""
       />
-      <Button
-        onPress={
-          handleSubmit(handleProfile)
-        }
-      >
-        Salvar
-      </Button>
+      <Button onPress={handleSubmit(handleProfile)}>Salvar</Button>
     </View>
-  )
-}
+  );
+};
 
 export default Form;

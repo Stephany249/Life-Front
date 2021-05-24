@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 import React, {
   createContext,
   useCallback,
@@ -7,18 +8,18 @@ import React, {
 } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import api from '../services/api';
 import { Alert } from 'react-native';
+import api from '../services/api';
 
 interface User {
+  avatar: string;
+  birthday: string;
+  cpf: string;
+  crm: string;
+  email: string;
   id: string;
   name: string;
-  cpf: string;
-  birthday: string;
-  email: string;
-  avatar: string;
   role: string;
-  crm: string;
 }
 
 interface SignInCredencials {
@@ -54,7 +55,7 @@ export const AuthProvider: React.FC = ({ children }) => {
       if (token[1] && user[1]) {
         api.defaults.headers.authorization = `Bearer ${token[1]}`;
 
-        setData({ token: token[1], user: JSON.parse(user[1])});
+        setData({ token: token[1], user: JSON.parse(user[1]) });
       }
 
       setLoading(false);
@@ -64,14 +65,15 @@ export const AuthProvider: React.FC = ({ children }) => {
   }, []);
 
   const signIn = useCallback(async ({ email, password }) => {
-    try{
-
-      console.log("authh", email, password);
+    try {
+      console.log('authh', email, password);
 
       const response = await api.post('/auth/login', {
         email,
         password,
       });
+
+      console.log(response.data.user);
 
       const { user, token } = response.data;
 
@@ -86,13 +88,9 @@ export const AuthProvider: React.FC = ({ children }) => {
         user,
         token,
       });
-
-    }catch (err) {
+    } catch (err) {
       console.log(err);
-      Alert.alert(
-        'Erro na autenticação',
-        `${err.response.data.message}`
-      );
+      Alert.alert('Erro na autenticação', `${err.response.data.message}`);
     }
   }, []);
 

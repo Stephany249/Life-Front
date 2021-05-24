@@ -11,14 +11,17 @@ export const Container = styled.View<ContainerProps>`
   border-radius: 10px;
   margin-bottom: 8px;
   border-bottom-width: 2;
-  border-bottom-color:#232729;
+  border-bottom-color: #232729;
 
   flex-direction: row;
   justify-content: center;
   align-items: center;
 
-  ${(props => props.isErrored && css`border-bottom-color:#fa7592;`)}
-
+  ${(props) =>
+    props.isErrored &&
+    css`
+      border-bottom-color: #fa7592;
+    `}
 `;
 
 export const TextInput = styled.TextInput`
