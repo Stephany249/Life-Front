@@ -13,7 +13,7 @@ import api from '../../services/api';
 import { DrawerActions, useNavigation } from '@react-navigation/native';
 import { getDate, getHours, getMonth, getYear, parseISO, isAfter, subHours, getMinutes } from 'date-fns';
 
-import { Content, AlignScheduling, AlingButton, BoxScheduling, ButtonHelpFriend, ButtonHelpMe, Calendar, Clock, ContainerImage, Container, DateScheduling, Edit, HeaderTable, Table, TextHelp, TextMoreScheduling, Title, TitleNotScheduling, Header, LogoImage, MenuButton, TextMoreSchedulingButton, NameScheduling, TopBoxScheduling, BottomBoxScheduling, ButtonStartNow, TextStartNow, Clipboard, HourScheduling, ClipboardScheduling, CalendarView, OpenDatePickerButton, OpenDatePickerButtonText  } from './styles';
+import { Content, AlignScheduling, AlingButton, BoxScheduling, ButtonHelpFriend, ButtonHelpMe, Calendar, Clock, ContainerImage, Container, DateScheduling, Edit, HeaderTable, Table, TextHelp, TextMoreScheduling, Title, TitleNotScheduling, Header, LogoImage, MenuButton, TextMoreSchedulingButton, NameScheduling, TopBoxScheduling, BottomBoxScheduling, ButtonStartNow, TextStartNow, Clipboard, HourScheduling, ClipboardScheduling, CalendarView, OpenDatePickerButton, OpenDatePickerButtonText, TableClient  } from './styles';
 
 interface SchedulingClientItem {
   Profissional: string;
@@ -172,7 +172,7 @@ const Dashboard: React.FC = () => {
         <Container>
           { user.role === 'CLIENT' ?
             <Content>
-              <Table>
+              <TableClient>
                 <HeaderTable>
                   <Title>Meus agendamentos</Title>
                 </HeaderTable>
@@ -228,14 +228,14 @@ const Dashboard: React.FC = () => {
                     </ContainerImage>
                     <TextHelp>Quero ajudar {'\n'}um amigo</TextHelp>
                   </ButtonHelpFriend>
-                  <ButtonHelpMe onPress={() => {navigation.navigate('TriageClient')}}>
+                  <ButtonHelpMe onPress={() => {navigation.navigate('FirstTriage')}}>
                     <ContainerImage>
                     <Image source={ClientImg} />
                     </ContainerImage>
                     <TextHelp>Quero uma {'\n'}ajuda</TextHelp>
                   </ButtonHelpMe>
                 </AlingButton>
-              </Table>
+              </TableClient>
             </Content>
           :
           <>

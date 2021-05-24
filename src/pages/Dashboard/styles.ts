@@ -33,6 +33,16 @@ export const Container = styled.View`
   justify-content: center;
 `;
 
+export const TableClient = styled.View`
+  flex:1;
+  height: 410;
+  width: 360;
+  border-top-left-radius: 24;
+  border-top-right-radius: 24;
+  background-color: #ffff;
+  margin-top: 250;
+`;
+
 export const Table = styled.View`
   flex:1;
   height: 390;
