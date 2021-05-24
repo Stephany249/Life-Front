@@ -290,11 +290,9 @@ const Dashboard: React.FC = () => {
                     </ContainerImage>
                     <TextHelp>Quero ajudar {'\n'}um amigo</TextHelp>
                   </ButtonHelpFriend>
-                  <ButtonHelpMe
-                    onPress={() => {
-                      navigation.navigate('TriageClient');
-                    }}
-                  >
+
+                  <ButtonHelpMe onPress={() => {navigation.navigate('FirstTriage')}}>
+
                     <ContainerImage>
                       <Image source={ClientImg} />
                     </ContainerImage>

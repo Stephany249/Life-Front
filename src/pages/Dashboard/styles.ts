@@ -31,9 +31,9 @@ export const Container = styled.View`
 `;
 
 export const TableClient = styled.View`
-  flex: 1;
-  height: 400;
-  width: 100%;
+  flex:1;
+  height: 410;
+  width: 360;
   border-top-left-radius: 24;
   border-top-right-radius: 24;
   background-color: #ffff;

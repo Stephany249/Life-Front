@@ -17,8 +17,6 @@ export const ContainerImage = styled.View`
 `;
 
 export const Table = styled.View`
-  flex: 1;
-  height: 290;
   width: 360;
   border-top-left-radius: 24;
   border-top-right-radius: 24;
