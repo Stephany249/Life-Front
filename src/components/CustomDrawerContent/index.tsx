@@ -24,8 +24,6 @@ const DrawerContent = (
 ): React.ReactElement => {
   const { navigation } = props;
   const { signOut, user } = useAuth();
-  const { name } = user;
-  // const nameArray = name.split(' ');
 
   return (
     <Container>

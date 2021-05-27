@@ -8,17 +8,15 @@ import FirstTriage from '../pages/FirstTriage';
 
 const App = createStackNavigator();
 
-const AppRoutes: React.FC = () =>{
+const AppRoutes: React.FC = () => {
   return (
-  <App.Navigator
-    screenOptions={{ headerShown: false}}
-  >
-    <App.Screen name="Dashboard" component={Dashboard} />
-    <App.Screen name="TriageClient" component={TriageClient} />
-    <App.Screen name="EditOpeningHours" component={EditOpeningHours} />
-    <App.Screen name="FirstTriage" component={FirstTriage} />
-  </App.Navigator>
-  )
+    <App.Navigator screenOptions={{ headerShown: false }}>
+      <App.Screen name="Dashboard" component={Dashboard} />
+      <App.Screen name="TriageClient" component={TriageClient} />
+      <App.Screen name="EditOpeningHours" component={EditOpeningHours} />
+      <App.Screen name="FirstTriage" component={FirstTriage} />
+    </App.Navigator>
+  );
 };
 
 export default AppRoutes;

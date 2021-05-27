@@ -73,8 +73,6 @@ export const AuthProvider: React.FC = ({ children }) => {
         password,
       });
 
-      console.log(response.data.user);
-
       const { user, token } = response.data;
 
       await AsyncStorage.multiSet([
@@ -89,7 +87,6 @@ export const AuthProvider: React.FC = ({ children }) => {
         token,
       });
     } catch (err) {
-      console.log(err);
       Alert.alert('Erro na autenticação', `${err.response.data.message}`);
     }
   }, []);

@@ -26,20 +26,20 @@ const schema = Yup.object().shape({
 const Form: React.FC = () => {
   const navigation = useNavigation();
 
-  const handleForgoutPassword = async (data: {
-    email: string;
-  }): Promise<any> => {
-    try {
-      await api.post('users/forgot', data);
-      Alert.alert('E-mail enviado', 'Envio do e-mail ocorreu com sucesso');
-      navigation.goBack();
-    } catch (err) {
-      Alert.alert(
-        'Erro no envio do e-mail',
-        'Ocorreu um erro ao enviar o e-mail, tente novamente',
-      );
-    }
-  };
+  // const handleForgoutPassword = async (data: {
+  //   email: string;
+  // }): Promise<any> => {
+  //   try {
+  //     await api.post('users/forgot', data);
+  //     Alert.alert('E-mail enviado', 'Envio do e-mail ocorreu com sucesso');
+  //     navigation.goBack();
+  //   } catch (err) {
+  //     Alert.alert(
+  //       'Erro no envio do e-mail',
+  //       'Ocorreu um erro ao enviar o e-mail, tente novamente',
+  //     );
+  //   }
+  // };
 
   const {
     control,
@@ -71,9 +71,7 @@ const Form: React.FC = () => {
         rules={{ required: true }}
         defaultValue=""
       />
-      <Button onPress={handleSubmit(handleForgoutPassword)}>
-        Enviar e-mail
-      </Button>
+      <Button onPress={() => {}}>Enviar e-mail</Button>
     </View>
   );
 };

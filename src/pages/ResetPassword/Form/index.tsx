@@ -24,23 +24,23 @@ const schema = Yup.object().shape({
 const Form: React.FC = () => {
   const navigation = useNavigation();
 
-  const handleResetPassword = async (data: {
-    password: string;
-  }): Promise<any> => {
-    try {
-      await api.post('users/reset', data);
-      Alert.alert(
-        'Senha recuperada com sucesso',
-        'Senha recuperada com sucesso',
-      );
-      navigation.goBack();
-    } catch (err) {
-      Alert.alert(
-        'Erro ao recuperar a senha',
-        'Ocorreu um erro ao recuperar a senha, tente novamente',
-      );
-    }
-  };
+  // const handleResetPassword = async (data: {
+  //   password: string;
+  // }): Promise<any> => {
+  //   try {
+  //     await api.post('users/reset', data);
+  //     Alert.alert(
+  //       'Senha recuperada com sucesso',
+  //       'Senha recuperada com sucesso',
+  //     );
+  //     navigation.goBack();
+  //   } catch (err) {
+  //     Alert.alert(
+  //       'Erro ao recuperar a senha',
+  //       'Ocorreu um erro ao recuperar a senha, tente novamente',
+  //     );
+  //   }
+  // };
 
   const {
     control,
@@ -72,7 +72,7 @@ const Form: React.FC = () => {
         rules={{ required: true }}
         defaultValue=""
       />
-      <Button onPress={handleSubmit(handleResetPassword)}>Enviar e-mail</Button>
+      <Button onPress={() => {}}>Enviar e-mail</Button>
     </View>
   );
 };

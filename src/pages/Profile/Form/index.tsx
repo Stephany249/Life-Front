@@ -101,9 +101,11 @@ const Form: React.FC = () => {
           uri: image,
         });
 
-        api.patch(`/users/avatar/${user.id}`, data).then((apiResponse) => {
-          updateUser(apiResponse.data);
-        });
+        await api
+          .patch(`/users/avatar/${user.id}`, data)
+          .then((apiResponse) => {
+            updateUser(apiResponse.data);
+          });
       } else {
         Alert.alert('Erro ao atualizar sua foto de perfil');
       }

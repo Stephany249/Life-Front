@@ -106,30 +106,35 @@ const Dashboard: React.FC = () => {
 
   const compareDate = new Date(Date.now());
 
-  console.log(compareDate, selectedDate);
-
   const usernName: React.ReactNode[] = [];
 
+  const handleScheduleClient = useCallback(async () => {
+    await api.get(`/scheduling/client/${user.id}`).then((response) => {
+      setSchedulingClient(response.data);
+    });
+  }, [user.id]);
+
   useEffect(() => {
-    if (user.role === 'CLIENT') {
-      api.get(`/scheduling/client/${user.id}`).then((response) => {
-        setSchedulingClient(response.data);
+    handleScheduleClient();
+  }, [handleScheduleClient]);
+
+  const handleScheduleSpecialist = useCallback(async () => {
+    await api
+      .get(
+        `/scheduling/specialist/${
+          user.crm
+        }?day=${selectedDate.getDate()}&month=${
+          selectedDate.getMonth() + 1
+        }&year=${selectedDate.getFullYear()}`,
+      )
+      .then((response) => {
+        setSchedulingSpecialist(response.data);
       });
-    } else {
-      console.log('lala', selectedDate);
-      api
-        .get(
-          `/scheduling/specialist/${
-            user.crm
-          }?day=${selectedDate.getDate()}&month=${
-            selectedDate.getMonth() + 1
-          }&year=${selectedDate.getFullYear()}`,
-        )
-        .then((response) => {
-          setSchedulingSpecialist(response.data);
-        });
-    }
-  }, [selectedDate, user.crm, user.id, user.role]);
+  }, [selectedDate, user.crm]);
+
+  useEffect(() => {
+    handleScheduleSpecialist();
+  }, [handleScheduleSpecialist]);
 
   if (schedulingClient.length > 0) {
     const date = parseISO(schedulingClient[0].date);
@@ -196,8 +201,6 @@ const Dashboard: React.FC = () => {
 
     usernName.push(name);
   }
-
-  console.log(dateFormatSpecialist);
 
   const handleToggleDatePicker = useCallback(() => {
     setShowDatePicker((state) => !state);
@@ -291,8 +294,11 @@ const Dashboard: React.FC = () => {
                     <TextHelp>Quero ajudar {'\n'}um amigo</TextHelp>
                   </ButtonHelpFriend>
 
-                  <ButtonHelpMe onPress={() => {navigation.navigate('FirstTriage')}}>
-
+                  <ButtonHelpMe
+                    onPress={() => {
+                      navigation.navigate('FirstTriage');
+                    }}
+                  >
                     <ContainerImage>
                       <Image source={ClientImg} />
                     </ContainerImage>
