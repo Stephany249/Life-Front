@@ -70,31 +70,13 @@ const TriageClient: React.FC = ({ route }) => {
       question3: -1,
       question4: -1,
       question5: -1,
-      question6: [-1],
+      question6: [26],
       question7: 30,
-      question8: -1,
+      question8: null,
       question9: [40],
       question10: null,
     },
   );
-
-  // const [question1, setQuestion1] = useState(-1);
-  // const [question2, setQuestion2] = useState(-1);
-  // const [question3, setQuestion3] = useState(-1);
-  // const [question4, setQuestion4] = useState(-1);
-  // const [question5, setQuestion5] = useState(-1);
-  // const [question6, setQuestion6] = useState([]);
-  // const [question6answer1, setQuestion6answer1] = useState(false);
-  // const [question6answer2, setQuestion6answer2] = useState(false);
-  // const [question6answer3, setQuestion6answer3] = useState(false);
-  // const [question6answer4, setQuestion6answer4] = useState(false);
-  // const [question6answer5, setQuestion6answer5] = useState(false);
-  // const [question6answer6, setQuestion6answer6] = useState(false);
-  // const [question6answer7, setQuestion6answer7] = useState(false);
-  // const [question7, setQuestion7] = useState(30);
-  // const [question8, setQuestion8] = useState(-1);
-  // const [question9, setQuestion9] = useState([40]);
-  // const [question10, setQuestion10] = useState(-1);
 
   const setResponseRadio = (questionID: any, value: number): void => {
     setQuestionsResponse({
@@ -121,34 +103,39 @@ const TriageClient: React.FC = ({ route }) => {
     }
   };
 
-  const mapQuestion9 = (question9: any[]): void => {
-    console.log('Question', question9, triageClients[9].answers);
-    question9.map((question) => {
-      if (question !== 40) {
-        console.log('aquii', question);
+  const removeLastComma = (answers: [number]): any => {
+    console.log(answers.join());
 
-        return (
-          <>
-            <Question>{triageClients[9].question}</Question>
-            {triageClients[9].answers.map((answer) => (
-              <SelectButton>
-                <RadioButton
-                  value={`${answer.id}`}
-                  color="pink"
-                  status={
-                    questionsResponse.question10 === answer.id
-                      ? 'checked'
-                      : 'unchecked'
-                  }
-                  onPress={() => setResponseRadio('question10', answer.id)}
-                />
-                <TextAnswers>{answer.answer}</TextAnswers>
-              </SelectButton>
-            ))}
-          </>
-        );
-      }
-    });
+    const number = answers.join();
+
+    return number;
+  };
+
+  const handleSubmitTriage = async (): Promise<any> => {
+    let response: any;
+    try {
+      const question6 = removeLastComma(questionsResponse.question6);
+      const question9 = removeLastComma(questionsResponse.question9);
+
+      const answer = {
+        question1: questionsResponse.question1,
+        question2: questionsResponse.question2,
+        question3: questionsResponse.question3,
+        question4: questionsResponse.question4,
+        question5: questionsResponse.question5,
+        question6: question6.concat(','),
+        question7: questionsResponse.question7,
+        question8: questionsResponse.question8,
+        question9: question9.concat(','),
+        question10: questionsResponse.question10,
+      };
+
+      response = await api.post(`medical-record/client/${user.id}`, answer);
+
+      console.log(response.data);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
@@ -338,7 +325,7 @@ const TriageClient: React.FC = ({ route }) => {
           </>
         ) : null}
         <AlignButton>
-          <Button>Próximo</Button>
+          <Button onPress={() => handleSubmitTriage()}>Próximo</Button>
         </AlignButton>
       </Container>
     </Content>
