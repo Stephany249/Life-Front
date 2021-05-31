@@ -43,7 +43,7 @@ export const ContainerImage = styled.View`
 
 export const Table = styled.View`
   flex: 1;
-  height: 400;
+  height: 440;
   width: 100%;
   border-top-left-radius: 24;
   border-top-right-radius: 24;

@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable no-use-before-define */
 import React, { useEffect, useState, useCallback } from 'react';
-import { Image, Platform, StatusBar } from 'react-native';
+import { Dimensions, Image, Platform, StatusBar } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Icon from 'react-native-vector-icons/Feather';
@@ -219,6 +219,10 @@ const Dashboard: React.FC = () => {
     [],
   );
 
+  console.log(
+    getYear(selectedDate) <= getYear(compareDate),
+    getMonth(compareDate) <= getMonth(selectedDate),
+  );
   return (
     <>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" translucent />
@@ -239,7 +243,10 @@ const Dashboard: React.FC = () => {
         <Container>
           {user.role === 'CLIENT' ? (
             <Content>
-              <TableClient>
+              <TableClient
+                height={Dimensions.get('window').height}
+                width={Dimensions.get('window').width}
+              >
                 <HeaderTable>
                   <Title>Meus agendamentos</Title>
                 </HeaderTable>
@@ -313,7 +320,7 @@ const Dashboard: React.FC = () => {
                 <Title>
                   Data escolhida:{' '}
                   {`${String(getDate(selectedDate)).padStart(2, '0')}/${String(
-                    getMonth(selectedDate),
+                    getMonth(selectedDate) + 1,
                   ).padStart(2, '0')}/${getYear(selectedDate)}`}
                 </Title>
                 <OpenDatePickerButton onPress={handleToggleDatePicker}>
@@ -331,7 +338,10 @@ const Dashboard: React.FC = () => {
                   />
                 )}
               </CalendarView>
-              <Table>
+              <Table
+                height={Dimensions.get('window').height}
+                width={Dimensions.get('window').width}
+              >
                 <HeaderTable>
                   <Title>Agendamentos</Title>
                 </HeaderTable>
@@ -383,12 +393,13 @@ const Dashboard: React.FC = () => {
                     </BoxScheduling>
                   )}
                 </AlignScheduling>
-                {`${String(getDate(compareDate)).padStart(2, '0')}/${String(
-                  getMonth(compareDate),
-                ).padStart(2, '0')}/${getYear(compareDate)}` <=
-                `${String(getDate(selectedDate)).padStart(2, '0')}/${String(
-                  getMonth(selectedDate),
-                ).padStart(2, '0')}/${getYear(selectedDate)}` ? (
+                {getDate(compareDate) <= getDate(selectedDate) ? (
+                  <TextMoreSchedulingButton onPress={() => {}}>
+                    <TextMoreScheduling>ver mais</TextMoreScheduling>
+                  </TextMoreSchedulingButton>
+                ) : getYear(selectedDate) <= getYear(compareDate) &&
+                  getMonth(compareDate) < getMonth(selectedDate) &&
+                  getDate(compareDate) > getDate(selectedDate) ? (
                   <TextMoreSchedulingButton onPress={() => {}}>
                     <TextMoreScheduling>ver mais</TextMoreScheduling>
                   </TextMoreSchedulingButton>

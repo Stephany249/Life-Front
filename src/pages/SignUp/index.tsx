@@ -27,7 +27,6 @@ const SignUp: React.FC = () => {
   return (
     <>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" translucent />
-
       <Content>
         <Container>
           <Header>

@@ -65,6 +65,7 @@ const Form: React.FC = () => {
             error={errors?.email}
             onChangeText={(value: any) => onChange(value)}
             value={value}
+            autoCapitalize="none"
           />
         )}
         name="email"
@@ -81,6 +82,7 @@ const Form: React.FC = () => {
             error={errors?.password}
             onChangeText={(value: any) => onChange(value)}
             value={value}
+            autoCapitalize="none"
             secureTextEntry
           />
         )}
