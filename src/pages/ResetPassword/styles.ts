@@ -1,5 +1,9 @@
 import styled from 'styled-components/native';
 
+interface Heightable {
+  height: number;
+}
+
 export const Keyboard = styled.KeyboardAvoidingView`
   flex: 1;
 `;
@@ -14,13 +18,26 @@ export const Container = styled.View`
 
 export const ContainerImage = styled.View`
   flex: 1;
+  margin-top: 24;
 `;
 
-export const Table = styled.View`
-  width: 360;
+export const LogoImage = styled.View`
+  height: 31;
+  width: 87.9;
+  justify-content: center;
+  align-items: center;
+  margin-right: 50;
+  flex: 0.65;
+`;
+
+export const Table = styled.View<Heightable>`
+  flex: 1;
+  height: 260;
+  width: 100%;
   border-top-left-radius: 24;
   border-top-right-radius: 24;
   background-color: #ffff;
+  margin-top: ${(props) => (props.height > 700 ? 130 : 0)};
 `;
 
 export const HeaderTable = styled.View`

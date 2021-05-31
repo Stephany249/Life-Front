@@ -15,7 +15,13 @@ import Button from '../../../components/Button';
 import TextField from '../../../components/Input';
 import TextInputMaskComponent from '../../../components/InputMask';
 
-import { SelectButton, TextAnswers, TextQuestion } from './styles';
+import {
+  Container,
+  ContainerSelectButton,
+  SelectButton,
+  TextAnswers,
+  TextQuestion,
+} from './styles';
 import api from '../../../services/api';
 
 type FormData = {
@@ -127,7 +133,7 @@ const Form: React.FC = () => {
   }, [register]);
 
   return (
-    <View>
+    <Container>
       <Controller
         control={control}
         render={({ field: { onChange, onBlur, value } }) => (
@@ -137,6 +143,7 @@ const Form: React.FC = () => {
             error={errors?.name}
             onChangeText={(value: any) => onChange(value)}
             value={value}
+            autoCapitalize="none"
           />
         )}
         name="name"
@@ -169,6 +176,7 @@ const Form: React.FC = () => {
             error={errors?.email}
             onChangeText={(value: any) => onChange(value)}
             value={value}
+            autoCapitalize="none"
           />
         )}
         name="email"
@@ -202,6 +210,7 @@ const Form: React.FC = () => {
             onChangeText={(value: any) => onChange(value)}
             value={value}
             icon="eye-off"
+            autoCapitalize="none"
           />
         )}
         name="password"
@@ -218,6 +227,7 @@ const Form: React.FC = () => {
             onChangeText={(value: any) => onChange(value)}
             value={value}
             icon="eye-off"
+            autoCapitalize="none"
           />
         )}
         name="passwordConfirmation"
@@ -227,22 +237,24 @@ const Form: React.FC = () => {
       <TextQuestion>
         Você é um profissional e quer ajudar voluntariamente?
       </TextQuestion>
-      <SelectButton>
-        <RadioButton
-          value="CLIENT"
-          color="pink"
-          status={checked === 'CLIENT' ? 'checked' : 'unchecked'}
-          onPress={() => setChecked('CLIENT')}
-        />
-        <TextAnswers>Não</TextAnswers>
-        <RadioButton
-          value="SPECIALIST"
-          color="pink"
-          status={checked === 'SPECIALIST' ? 'checked' : 'unchecked'}
-          onPress={() => setChecked('SPECIALIST')}
-        />
-        <TextAnswers>Sim</TextAnswers>
-      </SelectButton>
+      <ContainerSelectButton>
+        <SelectButton>
+          <RadioButton
+            value="CLIENT"
+            color="pink"
+            status={checked === 'CLIENT' ? 'checked' : 'unchecked'}
+            onPress={() => setChecked('CLIENT')}
+          />
+          <TextAnswers>Não</TextAnswers>
+          <RadioButton
+            value="SPECIALIST"
+            color="pink"
+            status={checked === 'SPECIALIST' ? 'checked' : 'unchecked'}
+            onPress={() => setChecked('SPECIALIST')}
+          />
+          <TextAnswers>Sim</TextAnswers>
+        </SelectButton>
+      </ContainerSelectButton>
       {checked === 'SPECIALIST' ? (
         <Controller
           control={control}
@@ -261,7 +273,7 @@ const Form: React.FC = () => {
         />
       ) : null}
       <Button onPress={handleSubmit(onSubmit)}>Cadastrar-se</Button>
-    </View>
+    </Container>
   );
 };
 

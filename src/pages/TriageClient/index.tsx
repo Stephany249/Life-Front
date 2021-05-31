@@ -6,7 +6,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { RadioButton, Checkbox } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Feather';
-import { Image } from 'react-native';
+import { ActivityIndicator, Alert, Image, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../../hooks/auth';
 import api from '../../services/api';
@@ -50,8 +50,7 @@ interface QuestionsResponse {
   question10: number | null;
 }
 
-const TriageClient: React.FC = ({ route }) => {
-  const { triageClient } = route.params;
+const TriageClient: React.FC = () => {
   const { user } = useAuth();
   const navigate = useNavigation();
 
@@ -59,9 +58,13 @@ const TriageClient: React.FC = ({ route }) => {
     navigate.navigate('FirstTriage');
   }, [navigate]);
 
-  const [triageClients, setTriageClients] = useState<QuestionAndAnswer[]>(
-    triageClient,
-  );
+  const [triageClient, setTriageClient] = useState<QuestionAndAnswer[]>([
+    {
+      answers: [],
+      question: '',
+    },
+  ]);
+  const [loading, setLoading] = useState(true);
 
   const [questionsResponse, setQuestionsResponse] = useState<QuestionsResponse>(
     {
@@ -104,18 +107,38 @@ const TriageClient: React.FC = ({ route }) => {
   };
 
   const removeLastComma = (answers: [number]): any => {
-    console.log(answers.join());
-
     const number = answers.join();
 
     return number;
   };
 
+  const questionsAndAnswers = useCallback(async () => {
+    api
+      .get('questions/answers/client')
+      .then((response) => setTriageClient(response.data));
+  }, [navigate, triageClient]);
+
+  useEffect(() => {
+    questionsAndAnswers();
+    if (!triageClient || triageClient.length < 10) {
+      setLoading(true);
+    } else {
+      setLoading(false);
+    }
+  }, [questionsAndAnswers, triageClient]);
+
   const handleSubmitTriage = async (): Promise<any> => {
     let response: any;
+    let question6 = '';
+    let question9 = '';
     try {
-      const question6 = removeLastComma(questionsResponse.question6);
-      const question9 = removeLastComma(questionsResponse.question9);
+      if (questionsResponse.question6.length > 0) {
+        question6 = removeLastComma(questionsResponse.question6);
+      }
+
+      if (questionsResponse.question9.length > 0) {
+        question9 = removeLastComma(questionsResponse.question9);
+      }
 
       const answer = {
         question1: questionsResponse.question1,
@@ -132,13 +155,28 @@ const TriageClient: React.FC = ({ route }) => {
 
       response = await api.post(`medical-record/client/${user.id}`, answer);
 
-      console.log(response.data);
+      const details = response.data;
+
+      navigate.navigate('ScreeningStatus', {
+        details,
+      });
     } catch (err) {
-      console.log(err);
+      Alert.alert('Erro ao salvar', err.response.data.message);
     }
   };
 
-  return (
+  return loading ? (
+    <View
+      style={{
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#fff',
+      }}
+    >
+      <ActivityIndicator size="large" color="#fa7592" />
+    </View>
+  ) : (
     <Content>
       <Header>
         <MenuButton onPress={navigateBack}>
@@ -149,118 +187,125 @@ const TriageClient: React.FC = ({ route }) => {
         </LogoImage>
       </Header>
       <Container>
-        <Question>{triageClients[0].question}</Question>
-        {triageClients[0].answers.map((answer) => (
+        <Question>{triageClient[0].question}</Question>
+        {triageClient[0].answers.map((answer) => (
           <SelectButton>
             <RadioButton
               value={`${answer.id}`}
-              color="pink"
+              color="#fa7592"
               status={
                 questionsResponse.question1 === answer.id
                   ? 'checked'
                   : 'unchecked'
               }
+              uncheckedColor="#fa7592"
               onPress={() => setResponseRadio('question1', answer.id)}
             />
             <TextAnswers>{answer.answer}</TextAnswers>
           </SelectButton>
         ))}
 
-        <Question>{triageClients[1].question}</Question>
-        {triageClients[1].answers.map((answer) => (
+        <Question>{triageClient[1].question}</Question>
+        {triageClient[1].answers.map((answer) => (
           <SelectButton>
             <RadioButton
               value={`${answer.id}`}
-              color="pink"
+              color="#fa7592"
               status={
                 questionsResponse.question2 === answer.id
                   ? 'checked'
                   : 'unchecked'
               }
+              uncheckedColor="#fa7592"
               onPress={() => setResponseRadio('question2', answer.id)}
             />
             <TextAnswers>{answer.answer}</TextAnswers>
           </SelectButton>
         ))}
 
-        <Question>{triageClients[2].question}</Question>
-        {triageClients[2].answers.map((answer) => (
+        <Question>{triageClient[2].question}</Question>
+        {triageClient[2].answers.map((answer) => (
           <SelectButton>
             <RadioButton
               value={`${answer.id}`}
-              color="pink"
+              color="#fa7592"
               status={
                 questionsResponse.question3 === answer.id
                   ? 'checked'
                   : 'unchecked'
               }
+              uncheckedColor="#fa7592"
               onPress={() => setResponseRadio('question3', answer.id)}
             />
             <TextAnswers>{answer.answer}</TextAnswers>
           </SelectButton>
         ))}
 
-        <Question>{triageClients[3].question}</Question>
-        {triageClients[3].answers.map((answer) => (
+        <Question>{triageClient[3].question}</Question>
+        {triageClient[3].answers.map((answer) => (
           <SelectButton>
             <RadioButton
               value={`${answer.id}`}
-              color="pink"
+              color="#fa7592"
               status={
                 questionsResponse.question4 === answer.id
                   ? 'checked'
                   : 'unchecked'
               }
+              uncheckedColor="#fa7592"
               onPress={() => setResponseRadio('question4', answer.id)}
             />
             <TextAnswers>{answer.answer}</TextAnswers>
           </SelectButton>
         ))}
 
-        <Question>{triageClients[4].question}</Question>
-        {triageClients[4].answers.map((answer) => (
+        <Question>{triageClient[4].question}</Question>
+        {triageClient[4].answers.map((answer) => (
           <SelectButton>
             <RadioButton
               value={`${answer.id}`}
-              color="pink"
+              color="#fa7592"
               status={
                 questionsResponse.question5 === answer.id
                   ? 'checked'
                   : 'unchecked'
               }
+              uncheckedColor="#fa7592"
               onPress={() => setResponseRadio('question5', answer.id)}
             />
             <TextAnswers>{answer.answer}</TextAnswers>
           </SelectButton>
         ))}
 
-        <Question>{triageClients[5].question}</Question>
-        {triageClients[5].answers.map((answer) => (
+        <Question>{triageClient[5].question}</Question>
+        {triageClient[5].answers.map((answer) => (
           <SelectButton>
             <Checkbox
-              color="pink"
+              color="#fa7592"
               status={
                 questionsResponse.question6.includes(answer.id)
                   ? 'checked'
                   : 'unchecked'
               }
+              uncheckedColor="#fa7592"
               onPress={() => setResponseCheckbox('question6', answer.id)}
             />
             <TextAnswers>{answer.answer}</TextAnswers>
           </SelectButton>
         ))}
 
-        <Question>{triageClients[6].question}</Question>
-        {triageClients[6].answers.map((answer) => (
+        <Question>{triageClient[6].question}</Question>
+        {triageClient[6].answers.map((answer) => (
           <SelectButton>
             <RadioButton
               value={`${answer.id}`}
-              color="pink"
+              color="#fa7592"
               status={
                 questionsResponse.question7 === answer.id
                   ? 'checked'
                   : 'unchecked'
               }
+              uncheckedColor="#fa7592"
               onPress={() => setResponseRadio('question7', answer.id)}
             />
             <TextAnswers>{answer.answer}</TextAnswers>
@@ -269,17 +314,18 @@ const TriageClient: React.FC = ({ route }) => {
 
         {questionsResponse.question7 !== 30 ? (
           <>
-            <Question>{triageClients[7].question}</Question>
-            {triageClients[7].answers.map((answer) => (
+            <Question>{triageClient[7].question}</Question>
+            {triageClient[7].answers.map((answer) => (
               <SelectButton>
                 <RadioButton
                   value={`${answer.id}`}
-                  color="pink"
+                  color="#fa7592"
                   status={
                     questionsResponse.question8 === answer.id
                       ? 'checked'
                       : 'unchecked'
                   }
+                  uncheckedColor="#fa7592"
                   onPress={() => setResponseRadio('question8', answer.id)}
                 />
                 <TextAnswers>{answer.answer}</TextAnswers>
@@ -288,35 +334,38 @@ const TriageClient: React.FC = ({ route }) => {
           </>
         ) : null}
 
-        <Question>{triageClients[8].question}</Question>
-        {triageClients[8].answers.map((answer) => (
+        <Question>{triageClient[8].question}</Question>
+        {triageClient[8].answers.map((answer) => (
           <SelectButton>
             <Checkbox
-              color="pink"
+              color="#fa7592"
               status={
                 questionsResponse.question9.includes(answer.id)
                   ? 'checked'
                   : 'unchecked'
               }
+              uncheckedColor="#fa7592"
               onPress={() => setResponseCheckbox('question9', answer.id)}
             />
             <TextAnswers>{answer.answer}</TextAnswers>
           </SelectButton>
         ))}
 
-        {!questionsResponse.question9.includes(40) ? (
+        {!questionsResponse.question9.includes(40) &&
+        questionsResponse.question9.length > 0 ? (
           <>
-            <Question>{triageClients[9].question}</Question>
-            {triageClients[9].answers.map((answer) => (
+            <Question>{triageClient[9].question}</Question>
+            {triageClient[9].answers.map((answer) => (
               <SelectButton>
                 <RadioButton
                   value={`${answer.id}`}
-                  color="pink"
+                  color="#fa7592"
                   status={
                     questionsResponse.question10 === answer.id
                       ? 'checked'
                       : 'unchecked'
                   }
+                  uncheckedColor="#fa7592"
                   onPress={() => setResponseRadio('question10', answer.id)}
                 />
                 <TextAnswers>{answer.answer}</TextAnswers>

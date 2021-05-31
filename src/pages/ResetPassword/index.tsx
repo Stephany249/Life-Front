@@ -3,10 +3,11 @@ import React from 'react';
 import Icon from 'react-native-vector-icons/Feather';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
-import { Image, Platform, StatusBar } from 'react-native';
+import { Dimensions, Image, Platform, StatusBar } from 'react-native';
 
 import theme from '../../assets/styles/theme';
 import collaborateImg from '../../assets/SignIn/collaborate.png';
+import logoImg from '../../assets/Logo/group_2.png';
 
 import Form from './Form';
 
@@ -22,6 +23,7 @@ import {
   FormTable,
   BackButton,
   Header,
+  LogoImage,
 } from './styles';
 
 const ResetPassword: React.FC = () => {
@@ -54,11 +56,14 @@ const ResetPassword: React.FC = () => {
                 >
                   <Icon name="chevron-left" size={24} color="#fa7592" />
                 </BackButton>
-                <ContainerImage>
-                  <Image source={collaborateImg} />
-                </ContainerImage>
+                <LogoImage>
+                  <Image source={logoImg} />
+                </LogoImage>
               </Header>
-              <Table>
+              <ContainerImage>
+                <Image source={collaborateImg} />
+              </ContainerImage>
+              <Table height={Dimensions.get('window').height}>
                 <HeaderTable>
                   <Title>Esqueceu sua senha?{'\n'}</Title>
                   <SubTitle>Não esquenta vamos dar um jeito nisso.</SubTitle>

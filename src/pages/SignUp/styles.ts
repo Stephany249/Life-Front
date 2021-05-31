@@ -2,6 +2,7 @@ import styled from 'styled-components/native';
 
 export const Container = styled.View`
   flex: 1;
+  height: 100%;
   background: #fff;
 `;
 
@@ -9,6 +10,8 @@ export const Title = styled.Text`
   font-size: 20;
   line-height: 26;
   font-family: 'Lato_700Bold';
+  margin-left: 24;
+  margin-right: 24;
   color: #2cc7cf;
 `;
 
@@ -17,7 +20,9 @@ export const Content = styled.ScrollView``;
 export const BackButton = styled.TouchableOpacity``;
 
 export const Header = styled.View`
-  padding-top: 32;
+  margin-left: 15;
+  margin-right: 24;
+  padding-top: 40;
   flex-direction: row;
   padding-left: 16;
 `;
@@ -37,6 +42,8 @@ export const SubTitle = styled.Text`
   line-height: 20;
   font-family: 'Lato_700Bold';
   color: #b4b5b6;
+  margin-left: 24;
+  margin-right: 24;
 `;
 
 export const HeaderTable = styled.View`

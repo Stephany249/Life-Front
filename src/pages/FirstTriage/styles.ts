@@ -4,8 +4,8 @@ export const Content = styled.ScrollView``;
 
 export const Header = styled.View`
   background-color: #ffff;
-  height: 47.9;
-  margin-top: 20;
+  height: 75;
+  margin-top: 25;
   flex-direction: row;
 `;
 
