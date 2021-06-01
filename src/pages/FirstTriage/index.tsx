@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-use-before-define */
 import React, { useCallback, useEffect, useState } from 'react';
 import { DrawerActions, useNavigation } from '@react-navigation/native';
@@ -34,28 +35,12 @@ interface Answer {
   score: number;
 }
 
-const FirstTriage: React.FC = () => {
+const FirstTriage: React.FC = ({route}) => {
+  const {help} = route.params;
   const navigation = useNavigation();
   const navigateBack = useCallback(() => {
     navigation.navigate('Dashboard');
   }, [navigation]);
-
-  const [triageClient, setTriageClient] = useState<QuestionAndAnswer[]>([
-    {
-      answers: [],
-      question: '',
-    },
-  ]);
-
-  const questionsAndAnswers = useCallback(async () => {
-    api
-      .get('questions/answers/client')
-      .then((response) => setTriageClient(response.data));
-  }, [navigation, triageClient]);
-
-  useEffect(() => {
-    questionsAndAnswers();
-  }, [questionsAndAnswers]);
 
   return (
     <>
@@ -73,27 +58,46 @@ const FirstTriage: React.FC = () => {
           <ContainerImage>
             <Image source={triageImg} />
           </ContainerImage>
+          {help === 'client' ? 
+          <>
+            <AlignText>
+              <Title>Que ótimo que você está buscando uma ajuda!</Title>
 
-          <AlignText>
-            <Title>Que ótimo que você está buscando uma ajuda!</Title>
+              <SubTitle>
+                Seu próximo passo será responder umas perguntinhas para que
+                possamos lhe ajudar da melhor forma possível ;)
+              </SubTitle>
+            </AlignText>
+
+            <AlignButton>
+            <Button
+              onPress={() => {
+                navigation.navigate('TriageClient');
+              }}
+            >
+              Próximo
+            </Button>
+            </AlignButton>
+            </>
+            :( <><AlignText>
+            <Title>Que ótimo que você está buscando uma ajuda para o seu amigo!</Title>
 
             <SubTitle>
               Seu próximo passo será responder umas perguntinhas para que
               possamos lhe ajudar da melhor forma possível ;)
             </SubTitle>
           </AlignText>
-
           <AlignButton>
             <Button
               onPress={() => {
-                navigation.navigate('TriageClient', {
-                  triageClient,
-                });
+                navigation.navigate('TriageFriend');
               }}
             >
               Próximo
             </Button>
           </AlignButton>
+          </>)}
+
         </Container>
       </Content>
     </>
