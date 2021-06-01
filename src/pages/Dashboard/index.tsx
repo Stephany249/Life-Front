@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable radix */
 /* eslint-disable @typescript-eslint/no-empty-function */
@@ -287,7 +288,10 @@ const Dashboard: React.FC = () => {
                   <TextMoreScheduling>ver mais</TextMoreScheduling>
                 </TextMoreSchedulingButton>
                 <AlingButton>
-                  <ButtonHelpFriend onPress={() => {}}>
+                  <ButtonHelpFriend onPress={() => {
+                      navigation.navigate('FirstTriage', {help:'friend'});
+
+                  }}>
                     <ContainerImage>
                       <Image source={FriendImg} />
                     </ContainerImage>
@@ -296,7 +300,7 @@ const Dashboard: React.FC = () => {
 
                   <ButtonHelpMe
                     onPress={() => {
-                      navigation.navigate('FirstTriage');
+                      navigation.navigate('FirstTriage', {help:'client'});
                     }}
                   >
                     <ContainerImage>

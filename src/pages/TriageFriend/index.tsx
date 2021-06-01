@@ -52,7 +52,7 @@ interface QuestionsResponse {
   question10: number | null;
 }
 
-const TriageClient: React.FC = ({ route }) => {
+const TriageFriend: React.FC = ({ route }) => {
   const { user } = useAuth();
   const navigate = useNavigation();
 
@@ -60,7 +60,7 @@ const TriageClient: React.FC = ({ route }) => {
     navigate.navigate('FirstTriage');
   }, [navigate]);
 
-  const [triageClient, setTriageClient] = useState<QuestionAndAnswer[]>([
+  const [triageFriend, setTriageFriend] = useState<QuestionAndAnswer[]>([
     {
       answers: [],
       question: '',
@@ -78,10 +78,10 @@ const TriageClient: React.FC = ({ route }) => {
       question3: -1,
       question4: -1,
       question5: -1,
-      question6: [26],
-      question7: 30,
+      question6: [71],
+      question7: 75,
       question8: null,
-      question9: [40],
+      question9: [85],
       question10: null,
     },
   );
@@ -121,19 +121,19 @@ const TriageClient: React.FC = ({ route }) => {
 
   const questionsAndAnswers = useCallback(async () => {
     api
-      .get('questions/answers/client')
-      .then((response) => setTriageClient(response.data));
+      .get('questions/answers/friend')
+      .then((response) => setTriageFriend(response.data));
   }, [navigate]);
 
 
   useEffect(() => { 
     questionsAndAnswers();
-    if (!triageClient || triageClient.length < 10) {
+    if (!triageFriend || triageFriend.length < 10) {
       setLoading(true);
     } else {
       setLoading(false);
     }
-  }, [triageClient]);
+  }, [triageFriend]);
 
   const handleSubmitTriage = async (): Promise<any> => {
     let response: any;
@@ -154,11 +154,12 @@ const TriageClient: React.FC = ({ route }) => {
         question10: questionsResponse.question10,
       };
 
-      response = await api.post(`medical-record/client/${user.id}`, answer);
+    
+      response = await api.post(`medical-record/friend/${user.id}`, answer);
 
       console.log(response.data);
     } catch (err) {
-      console.log(err);
+      console.log(err.response);
     }
   };
 
@@ -184,8 +185,8 @@ const TriageClient: React.FC = ({ route }) => {
         </LogoImage>
       </Header>
       <Container>
-        <Question>{triageClient[0].question}</Question>
-        {triageClient[0].answers.map((answer) => (
+        <Question>{triageFriend[0].question}</Question>
+        {triageFriend[0].answers.map((answer) => (
           <SelectButton>
             <RadioButton
               value={`${answer.id}`}
@@ -202,8 +203,8 @@ const TriageClient: React.FC = ({ route }) => {
           </SelectButton>
         ))}
 
-        <Question>{triageClient[1].question}</Question>
-        {triageClient[1].answers.map((answer) => (
+        <Question>{triageFriend[1].question}</Question>
+        {triageFriend[1].answers.map((answer) => (
           <SelectButton>
             <RadioButton
               value={`${answer.id}`}
@@ -220,8 +221,8 @@ const TriageClient: React.FC = ({ route }) => {
           </SelectButton>
         ))}
 
-        <Question>{triageClient[2].question}</Question>
-        {triageClient[2].answers.map((answer) => (
+        <Question>{triageFriend[2].question}</Question>
+        {triageFriend[2].answers.map((answer) => (
           <SelectButton>
             <RadioButton
               value={`${answer.id}`}
@@ -238,8 +239,8 @@ const TriageClient: React.FC = ({ route }) => {
           </SelectButton>
         ))}
 
-        <Question>{triageClient[3].question}</Question>
-        {triageClient[3].answers.map((answer) => (
+        <Question>{triageFriend[3].question}</Question>
+        {triageFriend[3].answers.map((answer) => (
           <SelectButton>
             <RadioButton
               value={`${answer.id}`}
@@ -256,8 +257,8 @@ const TriageClient: React.FC = ({ route }) => {
           </SelectButton>
         ))}
 
-        <Question>{triageClient[4].question}</Question>
-        {triageClient[4].answers.map((answer) => (
+        <Question>{triageFriend[4].question}</Question>
+        {triageFriend[4].answers.map((answer) => (
           <SelectButton>
             <RadioButton
               value={`${answer.id}`}
@@ -274,8 +275,8 @@ const TriageClient: React.FC = ({ route }) => {
           </SelectButton>
         ))}
 
-        <Question>{triageClient[5].question}</Question>
-        {triageClient[5].answers.map((answer) => (
+        <Question>{triageFriend[5].question}</Question>
+        {triageFriend[5].answers.map((answer) => (
           <SelectButton>
             <Checkbox
               color="#fa7592"
@@ -291,8 +292,8 @@ const TriageClient: React.FC = ({ route }) => {
           </SelectButton>
         ))}
 
-        <Question>{triageClient[6].question}</Question>
-        {triageClient[6].answers.map((answer) => (
+        <Question>{triageFriend[6].question}</Question>
+        {triageFriend[6].answers.map((answer) => (
           <SelectButton>
             <RadioButton
               value={`${answer.id}`}
@@ -309,10 +310,10 @@ const TriageClient: React.FC = ({ route }) => {
           </SelectButton>
         ))}
 
-        {questionsResponse.question7 !== 30 ? (
+        {questionsResponse.question7 !== 75 ? (
           <>
-            <Question>{triageClient[7].question}</Question>
-            {triageClient[7].answers.map((answer) => (
+            <Question>{triageFriend[7].question}</Question>
+            {triageFriend[7].answers.map((answer) => (
               <SelectButton>
                 <RadioButton
                   value={`${answer.id}`}
@@ -331,8 +332,8 @@ const TriageClient: React.FC = ({ route }) => {
           </>
         ) : null}
 
-        <Question>{triageClient[8].question}</Question>
-        {triageClient[8].answers.map((answer) => (
+        <Question>{triageFriend[8].question}</Question>
+        {triageFriend[8].answers.map((answer) => (
           <SelectButton>
             <Checkbox
               color="#fa7592"
@@ -348,11 +349,11 @@ const TriageClient: React.FC = ({ route }) => {
           </SelectButton>
         ))}
 
-        {!questionsResponse.question9.includes(40) &&
+        {!questionsResponse.question9.includes(85) &&
         questionsResponse.question9.length > 0 ? (
           <>
-            <Question>{triageClient[9].question}</Question>
-            {triageClient[9].answers.map((answer) => (
+            <Question>{triageFriend[9].question}</Question>
+            {triageFriend[9].answers.map((answer) => (
               <SelectButton>
                 <RadioButton
                   value={`${answer.id}`}
@@ -378,4 +379,4 @@ const TriageClient: React.FC = ({ route }) => {
   );
 };
 
-export default TriageClient;
+export default TriageFriend;
