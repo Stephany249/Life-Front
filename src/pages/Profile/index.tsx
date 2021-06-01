@@ -1,7 +1,7 @@
 /* eslint-disable no-use-before-define */
 import { useNavigation } from '@react-navigation/native';
 import React, { useCallback } from 'react';
-import { Image, StatusBar } from 'react-native';
+import { Dimensions, Image, StatusBar } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 
 import Form from './Form';
@@ -19,17 +19,20 @@ import {
 } from './styles';
 
 const Profile: React.FC = () => {
-  const { goBack } = useNavigation();
+  const navigate = useNavigation();
   const navigateBack = useCallback(() => {
-    goBack();
-  }, [goBack]);
+    navigate.navigate('Dashboard');
+  }, [navigate]);
 
   return (
     <>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" translucent />
 
       <Content>
-        <Container>
+        <Container
+          height={Dimensions.get('window').height}
+          width={Dimensions.get('window').width}
+        >
           <Header>
             <BackButton onPress={navigateBack}>
               <Icon name="chevron-left" size={24} color="#fa7592" />
@@ -38,7 +41,10 @@ const Profile: React.FC = () => {
               <Image source={logoImg} />
             </LogoImage>
           </Header>
-          <HeaderTable>
+          <HeaderTable
+            height={Dimensions.get('window').height}
+            width={Dimensions.get('window').width}
+          >
             <Title>Perfil</Title>
             <Form />
           </HeaderTable>

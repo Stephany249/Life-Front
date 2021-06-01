@@ -1,12 +1,19 @@
 import { RectButton } from 'react-native-gesture-handler';
 import styled from 'styled-components/native';
 
-export const Content = styled.ScrollView``;
+interface HeightAndWidth {
+  height: number;
+  width: number;
+}
+
+export const Content = styled.ScrollView`
+  flex: 1;
+`;
 
 export const Header = styled.View`
   background-color: #ffff;
-  height: 47.9;
-  margin-top: 20;
+  height: 60;
+  margin-top: 24;
   flex-direction: row;
 `;
 
@@ -17,11 +24,13 @@ export const MenuButton = styled.TouchableOpacity`
 `;
 
 export const LogoImage = styled.View`
-  margin-top: 10;
+  margin-top: 15;
   height: 31;
   width: 87.9;
   justify-content: center;
   align-items: center;
+  margin-left: 50;
+  flex: 0.09;
 `;
 
 export const Container = styled.View`
@@ -30,23 +39,24 @@ export const Container = styled.View`
   justify-content: center;
 `;
 
-export const TableClient = styled.View`
-  flex:1;
-  height: 410;
-  width: 360;
-  border-top-left-radius: 24;
-  border-top-right-radius: 24;
-  background-color: #ffff;
-  margin-top: 250;
-`;
-
-export const Table = styled.View`
+export const TableClient = styled.View<HeightAndWidth>`
   flex: 1;
   height: 390;
-  width: 360;
+  width: ${(props) => (props.width ? props.width : 400)};
   border-top-left-radius: 24;
   border-top-right-radius: 24;
   background-color: #ffff;
+  margin-top: ${(props) => (props.height > 700 ? 350 : 250)};
+`;
+
+export const Table = styled.View<HeightAndWidth>`
+  flex: 1;
+  height: 390;
+  width: ${(props) => (props.width ? props.width : 400)};
+  border-top-left-radius: 24;
+  border-top-right-radius: 24;
+  background-color: #ffff;
+  margin-top: ${(props) => (props.height > 700 ? 130 : 0)};
 `;
 
 export const HeaderTable = styled.View`

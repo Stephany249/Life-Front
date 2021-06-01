@@ -7,7 +7,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { RadioButton, Checkbox } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Feather';
-import { ActivityIndicator, Image } from 'react-native';
+import { ActivityIndicator, Alert, Image, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../../hooks/auth';
 import api from '../../services/api';
@@ -52,7 +52,7 @@ interface QuestionsResponse {
   question10: number | null;
 }
 
-const TriageClient: React.FC = ({ route }) => {
+const TriageClient: React.FC = () => {
   const { user } = useAuth();
   const navigate = useNavigation();
 
@@ -66,10 +66,7 @@ const TriageClient: React.FC = ({ route }) => {
       question: '',
     },
   ]);
-
-
   const [loading, setLoading] = useState(true);
-
 
   const [questionsResponse, setQuestionsResponse] = useState<QuestionsResponse>(
     {
@@ -112,8 +109,6 @@ const TriageClient: React.FC = ({ route }) => {
   };
 
   const removeLastComma = (answers: [number]): any => {
-    console.log(answers.join());
-
     const number = answers.join();
 
     return number;
@@ -126,20 +121,27 @@ const TriageClient: React.FC = ({ route }) => {
   }, [navigate]);
 
 
-  useEffect(() => { 
+  useEffect(() => {
     questionsAndAnswers();
     if (!triageClient || triageClient.length < 10) {
       setLoading(true);
     } else {
       setLoading(false);
     }
-  }, [triageClient]);
+  }, [questionsAndAnswers, triageClient]);
 
   const handleSubmitTriage = async (): Promise<any> => {
     let response: any;
+    let question6 = '';
+    let question9 = '';
     try {
-      const question6 = removeLastComma(questionsResponse.question6);
-      const question9 = removeLastComma(questionsResponse.question9);
+      if (questionsResponse.question6.length > 0) {
+        question6 = removeLastComma(questionsResponse.question6);
+      }
+
+      if (questionsResponse.question9.length > 0) {
+        question9 = removeLastComma(questionsResponse.question9);
+      }
 
       const answer = {
         question1: questionsResponse.question1,
@@ -156,9 +158,13 @@ const TriageClient: React.FC = ({ route }) => {
 
       response = await api.post(`medical-record/client/${user.id}`, answer);
 
-      console.log(response.data);
+      const details = response.data;
+
+      navigate.navigate('ScreeningStatus', {
+        details,
+      });
     } catch (err) {
-      console.log(err);
+      Alert.alert('Erro ao salvar', err.response.data.message);
     }
   };
 

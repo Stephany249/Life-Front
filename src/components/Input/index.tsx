@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 /* eslint-disable no-use-before-define */
 import React, { useState } from 'react';
-import { Text } from 'react-native';
+import { Text, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 
 import { Container, TextInput, TextError, ClickIcon } from './styles';
@@ -19,7 +19,7 @@ const TextField: React.FC<any> = ({ error, icon, label, ...inputProps }) => {
   };
 
   return (
-    <>
+    <View>
       <Text>{label}</Text>
       <Container isErrored={!!error}>
         {iconPasswordShow === 'eye-off' || iconPasswordShow === 'eye' ? (
@@ -37,7 +37,7 @@ const TextField: React.FC<any> = ({ error, icon, label, ...inputProps }) => {
           <Icon name={iconPasswordShow} size={24} color="#fa7592" />
         )}
       </Container>
-    </>
+    </View>
   );
 };
 

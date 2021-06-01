@@ -38,8 +38,8 @@ interface Answer {
 const FirstTriage: React.FC = ({route}) => {
   const {help} = route.params;
   const navigation = useNavigation();
-  const navigateMenu = useCallback(() => {
-    navigation.dispatch(DrawerActions.openDrawer());
+  const navigateBack = useCallback(() => {
+    navigation.navigate('Dashboard');
   }, [navigation]);
 
   return (
@@ -47,8 +47,8 @@ const FirstTriage: React.FC = ({route}) => {
       <StatusBar barStyle="dark-content" backgroundColor="#fff" translucent />
       <Content>
         <Header>
-          <MenuButton onPress={navigateMenu}>
-            <Icon name="menu" size={24} color="#fa7592" />
+          <MenuButton onPress={navigateBack}>
+            <Icon name="chevron-left" size={24} color="#fa7592" />
           </MenuButton>
           <LogoImage>
             <Image source={logoImg} />
