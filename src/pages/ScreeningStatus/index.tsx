@@ -1,7 +1,14 @@
 /* eslint-disable consistent-return */
 /* eslint-disable no-use-before-define */
-import React, { useEffect, useState } from 'react';
-import { Dimensions, Image, StatusBar, View } from 'react-native';
+import React, { useCallback, useEffect, useState } from 'react';
+import {
+  Alert,
+  Dimensions,
+  Image,
+  Linking,
+  StatusBar,
+  View,
+} from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
 import logoImg from '../../assets/Logo/group_2.png';
@@ -17,10 +24,13 @@ import {
   HeaderTable,
   LogoImage,
   TextOptions,
+  TextOptionsCVV,
 } from './styles';
 import api from '../../services/api';
+import { useAuth } from '../../hooks/auth';
 
 const ScreeningStatus: React.FC = ({ route }) => {
+  const { user } = useAuth();
   const { medicalRecordId, medicalRecordRole, status } = route.params.details;
 
   const [availability, setAvailability] = useState(false);
@@ -29,12 +39,34 @@ const ScreeningStatus: React.FC = ({ route }) => {
 
   const specialistAvailability = async (): Promise<void> => {
     const specialists = await api.get('scheduling/specialist-availability');
-    console.log(specialists.data.message);
     if (specialists.data.message === 'Sem profissionais disponíveis') {
       setAvailability(true);
     } else {
       setAvailability(false);
     }
+  };
+
+  const handleImmediateService = useCallback(async () => {
+    try {
+      const response = await api.post('scheduling/immediate', {
+        userId: user.id,
+        medicalRecordsId: medicalRecordId,
+      });
+
+      navigate.navigate('SchedulingCreated', {
+        date: response.data.date.getTime(),
+      });
+    } catch (err) {
+      Alert.alert(
+        'Erro ao criar agendamento',
+        'Ocorreu um erro ao tentar criar o agendamento, tente novamente',
+      );
+    }
+  }, [medicalRecordId, navigate, user.id]);
+
+  const handleTurnOnCVV = (): void => {
+    Linking.openURL('tel:188');
+    navigate.navigate('Dashboard');
   };
 
   useEffect(() => {
@@ -76,15 +108,23 @@ const ScreeningStatus: React.FC = ({ route }) => {
                     );
                   }
                   return (
-                    <ButtonOptions onPress={() => {}} disabled={false}>
+                    <ButtonOptions
+                      onPress={() => {
+                        handleImmediateService();
+                      }}
+                      disabled={false}
+                    >
                       <TextOptions>{option}</TextOptions>
                     </ButtonOptions>
                   );
                 }
-                if (option === 'Ligar CVV') {
+                if (option === 'CVV') {
                   return (
-                    <ButtonOptions onPress={() => {}} disabled={false}>
-                      <TextOptions>{option}</TextOptions>
+                    <ButtonOptions
+                      onPress={() => handleTurnOnCVV()}
+                      disabled={false}
+                    >
+                      <TextOptionsCVV>Ligar para o {option}</TextOptionsCVV>
                     </ButtonOptions>
                   );
                 }

@@ -46,7 +46,7 @@ export const TableClient = styled.View<HeightAndWidth>`
   border-top-left-radius: 24;
   border-top-right-radius: 24;
   background-color: #ffff;
-  margin-top: ${(props) => (props.height > 700 ? 350 : 250)};
+  margin-top: ${(props) => (props.height > 726 ? 350 : 250)};
 `;
 
 export const Table = styled.View<HeightAndWidth>`
@@ -56,7 +56,7 @@ export const Table = styled.View<HeightAndWidth>`
   border-top-left-radius: 24;
   border-top-right-radius: 24;
   background-color: #ffff;
-  margin-top: ${(props) => (props.height > 700 ? 130 : 0)};
+  margin-top: ${(props) => (props.height > 726 ? 130 : 0)};
 `;
 
 export const HeaderTable = styled.View`

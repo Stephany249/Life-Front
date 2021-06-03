@@ -1,12 +1,20 @@
 /* eslint-disable no-use-before-define */
-
 import { useNavigation } from '@react-navigation/native';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Alert, Dimensions, Image, Platform, StatusBar } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
+import {
+  format,
+  getDate,
+  getHours,
+  getMonth,
+  getYear,
+  parseISO,
+} from 'date-fns';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { format, getDate, getMonth, getYear } from 'date-fns';
 import api from '../../services/api';
+import { useAuth } from '../../hooks/auth';
+import Button from '../../components/Button';
 
 import logoImg from '../../assets/Logo/group_2.png';
 
@@ -33,9 +41,9 @@ import {
   HourText,
   CreateSchedulingButton,
   SubTitle,
+  CancelScheduling,
+  CancelSchedulingText,
 } from './styles';
-import Button from '../../components/Button';
-import { useAuth } from '../../hooks/auth';
 
 export interface Specialists {
   crm: string;
@@ -48,17 +56,19 @@ interface AvailabilityItem {
   available: boolean;
 }
 
-const CreateScheduling: React.FC = ({ route }) => {
-  const { medicalRecordId, medicalRecordRole } = route.params;
+const EditSchedule: React.FC = ({ route }) => {
+  const { crmSpecialist, date, id } = route.params.scheduling;
   const { user } = useAuth();
   const navigation = useNavigation();
 
+  const dateFormat = parseISO(date);
+
   const [specialists, setSpecialists] = useState<Specialists[]>([]);
-  const [selectedSpecialist, setSelectedSpecialist] = useState('');
+  const [selectedSpecialist, setSelectedSpecialist] = useState(crmSpecialist);
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(new Date(dateFormat));
   const [availability, setAvailability] = useState<AvailabilityItem[]>([]);
-  const [selectedHour, setSelectedHour] = useState(0);
+  const [selectedHour, setSelectedHour] = useState(getHours(dateFormat));
 
   useEffect(() => {
     api.get('/users/specialits').then((response) => {
@@ -81,7 +91,7 @@ const CreateScheduling: React.FC = ({ route }) => {
   }, [selectedDate, selectedSpecialist]);
 
   const navigateBack = useCallback(() => {
-    navigation.navigate('ScreeningStatus');
+    navigation.navigate('Dashboard');
   }, [navigation]);
 
   const handleSelecteSpecialist = useCallback((specialistCrm: string) => {
@@ -93,13 +103,13 @@ const CreateScheduling: React.FC = ({ route }) => {
   }, []);
 
   const handleDateChanged = useCallback(
-    (event: any, date: Date | undefined) => {
+    (event: any, data: Date | undefined) => {
       if (Platform.OS === 'android') {
         setShowDatePicker(false);
       }
 
-      if (date) {
-        setSelectedDate(date);
+      if (data) {
+        setSelectedDate(data);
       }
     },
     [],
@@ -111,47 +121,6 @@ const CreateScheduling: React.FC = ({ route }) => {
     },
     [setSelectedHour],
   );
-
-  const handleCreateScheduling = useCallback(async () => {
-    try {
-      const date = new Date(selectedDate);
-
-      date.setHours(selectedHour);
-      date.setMinutes(0);
-
-      if (medicalRecordRole === 'CLIENT') {
-        await api.post(`scheduling/${selectedSpecialist}/client`, {
-          userId: user.id,
-          date,
-          medicalRecordsId: medicalRecordId,
-        });
-      } else if (medicalRecordRole === 'FRIEND') {
-        await api.post(`scheduling/${selectedSpecialist}/friend`, {
-          userId: user.id,
-          date,
-          medicalRecordsId: medicalRecordId,
-        });
-      }
-
-      navigation.navigate('SchedulingCreated', {
-        date: date.getTime(),
-        status: 'concluído',
-      });
-    } catch (err) {
-      Alert.alert(
-        'Erro ao criar agendamento',
-        'Ocorreu um erro ao tentar criar o agendamento, tente novamente',
-      );
-    }
-  }, [
-    selectedDate,
-    selectedHour,
-    medicalRecordRole,
-    navigation,
-    selectedSpecialist,
-    user.id,
-    medicalRecordId,
-  ]);
 
   const morningAvailability = useMemo(() => {
     return availability
@@ -189,6 +158,89 @@ const CreateScheduling: React.FC = ({ route }) => {
       });
   }, [availability]);
 
+  const handleEditScheduling = useCallback(async () => {
+    try {
+      const dateSelected = new Date(selectedDate);
+
+      dateSelected.setHours(selectedHour);
+      dateSelected.setMinutes(0);
+
+      if (user.role === 'CLIENT') {
+        await api.put(
+          `scheduling/${id}/client/${user.id}/specialist/${selectedSpecialist}`,
+          {
+            date: dateSelected,
+          },
+        );
+      } else if (user.role === 'SPECIALIST') {
+        await api.put(`scheduling/${id}/specialist/${selectedSpecialist}/`, {
+          date: dateSelected,
+        });
+      }
+
+      navigation.navigate('SchedulingCreated', {
+        date: dateSelected.getTime(),
+        status: 'alterado',
+      });
+    } catch (err) {
+      Alert.alert(
+        'Erro ao editar o agendamento',
+        'Ocorreu um erro ao tentar editar o agendamento, tente novamente',
+      );
+    }
+  }, [
+    id,
+    navigation,
+    selectedDate,
+    selectedHour,
+    selectedSpecialist,
+    user.id,
+    user.role,
+  ]);
+
+  const handleCancelScheduling = useCallback(async () => {
+    let response: any;
+    try {
+      const dateSelected = new Date(selectedDate);
+
+      dateSelected.setHours(selectedHour);
+      dateSelected.setMinutes(0);
+
+      if (user.role === 'CLIENT') {
+        response = await api.delete(`scheduling/${id}/client/${user.id}`);
+      } else if (user.role === 'SPECIALIST') {
+        response = await api.delete(
+          `scheduling/${id}/specialist/${selectedSpecialist}/`,
+        );
+      }
+
+      navigation.navigate('SchedulingCreated', {
+        date: dateSelected.getTime(),
+        status: 'cancelado',
+      });
+    } catch (err) {
+      if (!err.response.data.message) {
+        Alert.alert(
+          'Erro ao cancelar o agendamento',
+          'Ocorreu um erro ao tentar cancelar o agendamento, tente novamente',
+        );
+      } else {
+        Alert.alert(
+          'Erro ao cancelar o agendamento',
+          `${err.response.data.message}`,
+        );
+      }
+    }
+  }, [
+    id,
+    navigation,
+    selectedDate,
+    selectedHour,
+    selectedSpecialist,
+    user.id,
+    user.role,
+  ]);
+
   return (
     <>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" translucent />
@@ -204,39 +256,39 @@ const CreateScheduling: React.FC = ({ route }) => {
             <Image source={logoImg} />
           </LogoImage>
         </Header>
-
         <Content>
-          <SpecialistListContainer>
-            <SpecialistList
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              data={specialists}
-              keyExtractor={(specialist) => specialist.crm}
-              renderItem={({ item: specialist }) => (
-                <SpecialistContainer
-                  onPress={() => handleSelecteSpecialist(specialist.crm)}
-                  selected={specialist.crm === selectedSpecialist}
-                >
-                  <SpecialistAvatar
-                    source={{
-                      uri:
-                        specialist.avatar ||
-                        `https://ui-avatars.com/api/?name=${specialist.name.replace(
-                          ' ',
-                          '%20',
-                        )}&background=fa7592&color=fff&size=128`,
-                    }}
-                  />
-                  <SpecialistName
+          {user.role === 'CLIENT' ? (
+            <SpecialistListContainer>
+              <SpecialistList
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                data={specialists}
+                keyExtractor={(specialist) => specialist.crm}
+                renderItem={({ item: specialist }) => (
+                  <SpecialistContainer
+                    onPress={() => handleSelecteSpecialist(specialist.crm)}
                     selected={specialist.crm === selectedSpecialist}
                   >
-                    {specialist.name}
-                  </SpecialistName>
-                </SpecialistContainer>
-              )}
-            />
-          </SpecialistListContainer>
-
+                    <SpecialistAvatar
+                      source={{
+                        uri:
+                          specialist.avatar ||
+                          `https://ui-avatars.com/api/?name=${specialist.name.replace(
+                            ' ',
+                            '%20',
+                          )}&background=fa7592&color=fff&size=128`,
+                      }}
+                    />
+                    <SpecialistName
+                      selected={specialist.crm === selectedSpecialist}
+                    >
+                      {specialist.name}
+                    </SpecialistName>
+                  </SpecialistContainer>
+                )}
+              />
+            </SpecialistListContainer>
+          ) : null}
           <Calendar>
             <Title>Escolha a data</Title>
             <SubTitle>
@@ -343,8 +395,15 @@ const CreateScheduling: React.FC = ({ route }) => {
               ) : null}
             </Section>
           </Schedule>
+          <CancelScheduling
+            height={Dimensions.get('window').height}
+            width={Dimensions.get('window').width}
+            onPress={handleCancelScheduling}
+          >
+            <CancelSchedulingText>Cancelar agendamento</CancelSchedulingText>
+          </CancelScheduling>
           <CreateSchedulingButton>
-            <Button onPress={handleCreateScheduling}>Agendar</Button>
+            <Button onPress={handleEditScheduling}>Agendar</Button>
           </CreateSchedulingButton>
         </Content>
       </Container>
@@ -352,4 +411,4 @@ const CreateScheduling: React.FC = ({ route }) => {
   );
 };
 
-export default CreateScheduling;
+export default EditSchedule;

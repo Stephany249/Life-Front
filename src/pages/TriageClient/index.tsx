@@ -27,7 +27,6 @@ import {
   SelectButton,
   TextAnswers,
 } from './styles';
-import { View } from 'react-native';
 
 interface QuestionAndAnswer {
   question: string;

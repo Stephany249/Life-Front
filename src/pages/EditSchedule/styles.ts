@@ -126,7 +126,6 @@ export const OpenDatePickerButtonText = styled.Text`
 
 export const Schedule = styled.View`
   padding-top: 24;
-  padding-bottom: 16;
 `;
 
 export const Section = styled.View`
@@ -169,4 +168,18 @@ export const HourText = styled.Text<HourTextProps>`
 export const CreateSchedulingButton = styled.View`
   align-items: center;
   justify-content: center;
+`;
+
+export const CancelScheduling = styled.TouchableOpacity<HeightAndWidth>`
+  height: 64;
+  width: ${(props) => props.width};
+  align-items: center;
+  justify-content: center;
+`;
+
+export const CancelSchedulingText = styled.Text`
+  font-family: 'Lato_400Regular';
+  font-size: 14px;
+  color: #fa7592;
+  text-decoration: underline;
 `;

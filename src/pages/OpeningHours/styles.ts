@@ -2,7 +2,7 @@ import styled from 'styled-components/native';
 
 export const Container = styled.View`
   flex: 1;
-  background: #FFF;
+  background: #fff;
 `;
 
 export const Header = styled.View`
@@ -24,7 +24,7 @@ export const LogoImage = styled.View`
 
 export const Title = styled.Text`
   font-size: 20;
-  line-height:26;
+  line-height: 26;
   font-family: 'Lato_700Bold';
   color: #090b0d;
   margin-top: 24;
@@ -45,7 +45,7 @@ export const Day = styled.View`
   align-items: center;
   justify-content: center;
   margin-left: 8;
-  background: #b9b9d9;
+  background: #e9e5e6;
   margin-bottom: 16;
 `;
 
@@ -53,7 +53,7 @@ export const DayText = styled.Text`
   font-size: 16;
   line-height: 20.8;
   font-family: 'Lato_700Bold';
-  color: #fff;
+  color: #090b0d;
 `;
 
 export const ContainerButton = styled.View`

@@ -7,8 +7,9 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { RadioButton, Checkbox } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Feather';
-import { ActivityIndicator, Image } from 'react-native';
+import { ActivityIndicator, Alert, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { View } from 'react-native';
 import { useAuth } from '../../hooks/auth';
 import api from '../../services/api';
 import Button from '../../components/Button';
@@ -27,7 +28,6 @@ import {
   SelectButton,
   TextAnswers,
 } from './styles';
-import { View } from 'react-native';
 
 interface QuestionAndAnswer {
   question: string;
@@ -112,8 +112,6 @@ const TriageFriend: React.FC = ({ route }) => {
   };
 
   const removeLastComma = (answers: [number]): any => {
-    console.log(answers.join());
-
     const number = answers.join();
 
     return number;
@@ -126,7 +124,7 @@ const TriageFriend: React.FC = ({ route }) => {
   }, [navigate]);
 
 
-  useEffect(() => { 
+  useEffect(() => {
     questionsAndAnswers();
     if (!triageFriend || triageFriend.length < 10) {
       setLoading(true);
@@ -154,12 +152,16 @@ const TriageFriend: React.FC = ({ route }) => {
         question10: questionsResponse.question10,
       };
 
-    
+
       response = await api.post(`medical-record/friend/${user.id}`, answer);
 
-      console.log(response.data);
+      const details = response.data;
+
+      navigate.navigate('ScreeningStatus', {
+        details,
+      });
     } catch (err) {
-      console.log(err.response);
+      Alert.alert('Erro ao salvar', err.response.data.message);
     }
   };
 
