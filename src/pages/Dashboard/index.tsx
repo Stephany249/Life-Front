@@ -291,7 +291,7 @@ const Dashboard: React.FC = () => {
                               </ButtonStartNow>
                             ) : null
                           ) : (
-                            <Edit onPress={() => {navigation.navigate('EditSchedule', {scheduling: schedulingClient[0]})}}>
+                            <Edit onPress={() => {navigation.navigate('EditSchedule', {scheduling: schedulingClient[0], screen: 'Dashboard'})}}>
                               <Icon name="edit" size={16} color="#fa7592" />
                             </Edit>
                           )}
@@ -311,7 +311,7 @@ const Dashboard: React.FC = () => {
                     )}
                   </BoxScheduling>
                 </AlignScheduling>
-                <TextMoreSchedulingButton onPress={() => {}}>
+                <TextMoreSchedulingButton onPress={() => {navigation.navigate('ViewMore', {scheduling: schedulingClient})}}>
                   <TextMoreScheduling>ver mais</TextMoreScheduling>
                 </TextMoreSchedulingButton>
                 <AlingButton>
@@ -392,7 +392,7 @@ const Dashboard: React.FC = () => {
                             </ButtonStartNow>
                           ) : null
                         ) : (
-                          <Edit onPress={() => {navigation.navigate('EditSchedule', {scheduling: schedulingSpecialist[0].scheduling})}}>
+                          <Edit onPress={() => {navigation.navigate('EditSchedule', {scheduling: schedulingSpecialist[0].scheduling, screen: 'Dashboard'})}}>
                             <Icon name="edit" size={16} color="#fa7592" />
                           </Edit>
                         )}
@@ -418,13 +418,13 @@ const Dashboard: React.FC = () => {
                   )}
                 </AlignScheduling>
                 {getDate(compareDate) <= getDate(selectedDate) ? (
-                  <TextMoreSchedulingButton onPress={() => {}}>
+                  <TextMoreSchedulingButton onPress={() => {navigation.navigate('ViewMore', {scheduling: schedulingSpecialist})}}>
                     <TextMoreScheduling>ver mais</TextMoreScheduling>
                   </TextMoreSchedulingButton>
                 ) : getYear(selectedDate) <= getYear(compareDate) &&
                   getMonth(compareDate) < getMonth(selectedDate) &&
                   getDate(compareDate) > getDate(selectedDate) ? (
-                  <TextMoreSchedulingButton onPress={() => {}}>
+                  <TextMoreSchedulingButton onPress={() => {navigation.navigate('ViewMore', {scheduling: schedulingSpecialist})}}>
                     <TextMoreScheduling>ver mais</TextMoreScheduling>
                   </TextMoreSchedulingButton>
                 ) : null}

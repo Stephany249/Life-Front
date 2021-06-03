@@ -91,8 +91,8 @@ const EditSchedule: React.FC = ({ route }) => {
   }, [selectedDate, selectedSpecialist]);
 
   const navigateBack = useCallback(() => {
-    navigation.navigate('Dashboard');
-  }, [navigation]);
+    navigation.navigate(route.params.screen);
+  }, [navigation, route.params.screen]);
 
   const handleSelecteSpecialist = useCallback((specialistCrm: string) => {
     setSelectedSpecialist(specialistCrm);
