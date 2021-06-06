@@ -62,6 +62,7 @@ import {
   OpenDatePickerButtonText,
   TableClient,
 } from './styles';
+import ReturnTriagePacient from '../ReturnTriagePacient';
 
 interface SchedulingClientItem {
   Profissional: string;
@@ -389,7 +390,7 @@ const Dashboard: React.FC = () => {
                           <Icon name="clock" size={16} color="#fa7592" />
                           <HourScheduling>{hourSpecialist[0]}</HourScheduling>
                         </Clock>
-                        <Clipboard onPress={() => {}}>
+                        <Clipboard onPress={() => {navigation.navigate('ReturnTriagePacient', {scheduling: schedulingSpecialist[0]})}}>
                           <Icon name="clipboard" size={16} color="#fa7592" />
                           <ClipboardScheduling>Triagem</ClipboardScheduling>
                         </Clipboard>

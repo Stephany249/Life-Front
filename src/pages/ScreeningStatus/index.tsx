@@ -37,6 +37,7 @@ const ScreeningStatus: React.FC = ({ route }) => {
     }
   };
 
+
   useEffect(() => {
     specialistAvailability();
   }, []);

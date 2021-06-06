@@ -34,7 +34,7 @@ export const HeaderTable = styled.View<HeightAndWidth>`
   border-top-left-radius: 24;
   border-top-right-radius: 24;
   flex-direction: column;
-  margin-left: ${(props) => (props.height > 700 ? 24 : 0)};
+  margin-left: ${(props) => (props.height > 725 ? 24 : 0)};
 `;
 
 export const ContainerImage = styled.View`
@@ -47,7 +47,7 @@ export const Buttons = styled.View<HeightAndWidth>`
   align-items: center;
   justify-content: center;
   flex-direction: row;
-  margin-top: ${(props) => (props.height > 700 ? 250 : 150)};
+  margin-top: ${(props) => (props.height > 725 ? 250 : 150)};
 `;
 
 export const ButtonOptions = styled.TouchableOpacity`
