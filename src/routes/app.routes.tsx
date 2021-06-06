@@ -10,6 +10,8 @@ import TriageClient from '../pages/TriageClient';
 import EditOpeningHours from '../pages/EditOpeningHours';
 import FirstTriage from '../pages/FirstTriage';
 import TriageFriend from '../pages/TriageFriend';
+import EditSchedule from '../pages/EditSchedule';
+import ViewMore from '../pages/ViewMore';
 
 const App = createStackNavigator();
 
@@ -24,7 +26,8 @@ const AppRoutes: React.FC = () => {
       <App.Screen name="ScreeningStatus" component={ScreeningStatus} />
       <App.Screen name="CreateScheduling" component={CreateScheduling} />
       <App.Screen name="SchedulingCreated" component={SchedulingCreated} />
-
+      <App.Screen name="EditSchedule" component={EditSchedule} />
+      <App.Screen name="ViewMore" component={ViewMore} />
     </App.Navigator>
   );
 };

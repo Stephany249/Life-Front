@@ -36,7 +36,7 @@ export const HeaderTable = styled.View<HeightAndWidth>`
   border-top-left-radius: 24;
   border-top-right-radius: 24;
   flex-direction: column;
-  margin-left: ${(props) => (props.height > 700 ? 24 : 0)};
+  margin-left: ${(props) => (props.height > 726 ? 24 : 0)};
 `;
 
 export const Title = styled.Text`

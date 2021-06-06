@@ -108,6 +108,7 @@ const Dashboard: React.FC = () => {
   const compareDate = new Date(Date.now());
 
   const usernName: React.ReactNode[] = [];
+  const specialistName: React.ReactNode[] = [];
 
   const handleScheduleClient = useCallback(async () => {
     await api.get(`/scheduling/client/${user.id}`).then((response) => {
@@ -117,7 +118,7 @@ const Dashboard: React.FC = () => {
 
   useEffect(() => {
     handleScheduleClient();
-  }, [handleScheduleClient]);
+  }, [handleScheduleClient, navigation]);
 
   const handleScheduleSpecialist = useCallback(async () => {
     await api
@@ -135,7 +136,7 @@ const Dashboard: React.FC = () => {
 
   useEffect(() => {
     handleScheduleSpecialist();
-  }, [handleScheduleSpecialist]);
+  }, [handleScheduleSpecialist, navigation]);
 
   if (schedulingClient.length > 0) {
     const date = parseISO(schedulingClient[0].date);
@@ -143,9 +144,11 @@ const Dashboard: React.FC = () => {
     const month = getMonth(date) + 1;
     const year = getYear(date);
     const hours = getHours(date);
+    const minutes = getMinutes(date);
     const parseMonth = String(month).padStart(2, '0');
     const parseDay = String(day).padStart(2, '0');
     const parseHour = String(hours).padStart(2, '0');
+    const parseMinutes = String(minutes).padStart(2, '0');
 
     const dayCompare = getDate(compareDate);
     const monthCompare = getMonth(compareDate) + 1;
@@ -163,7 +166,21 @@ const Dashboard: React.FC = () => {
       dateFormatClient = `${parseDay}/${parseMonth}/${year}`;
     }
 
-    hourClient = `${parseHour}:00`;
+    hourClient = `${parseHour}:${parseMinutes}`;
+
+
+    const arrayName = schedulingClient[0].Profissional.split(' ');
+
+    let name: any;
+
+    if(arrayName.length > 1) {
+      name = `${arrayName[0]} ${arrayName[arrayName.length - 1]}`;
+    }else if(arrayName.length === 1) {
+      name = `${arrayName[0]}`;
+    }
+
+
+    specialistName.push(name);
   }
 
   if (schedulingSpecialist.length > 0) {
@@ -198,7 +215,14 @@ const Dashboard: React.FC = () => {
 
     const arrayName = schedulingSpecialist[0].name.split(' ');
 
-    const name = `${arrayName[0]} ${arrayName[arrayName.length - 1]}`;
+    let name: any;
+
+    if(arrayName.length > 1) {
+      name = `${arrayName[0]} ${arrayName[arrayName.length - 1]}`;
+    }else if(arrayName.length === 1) {
+      name = `${arrayName[0]}`;
+    }
+
 
     usernName.push(name);
   }
@@ -220,10 +244,6 @@ const Dashboard: React.FC = () => {
     [],
   );
 
-  console.log(
-    getYear(selectedDate) <= getYear(compareDate),
-    getMonth(compareDate) <= getMonth(selectedDate),
-  );
   return (
     <>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" translucent />
@@ -261,7 +281,7 @@ const Dashboard: React.FC = () => {
                       <>
                         <TopBoxScheduling>
                           <NameScheduling>
-                            {schedulingClient[0].Profissional}
+                            {specialistName[0]}
                           </NameScheduling>
                           {subHours(parseISO(schedulingClient[0].date), 2) <=
                           compareDate ? (
@@ -271,7 +291,7 @@ const Dashboard: React.FC = () => {
                               </ButtonStartNow>
                             ) : null
                           ) : (
-                            <Edit onPress={() => {}}>
+                            <Edit onPress={() => {navigation.navigate('EditSchedule', {scheduling: schedulingClient[0], screen: 'Dashboard'})}}>
                               <Icon name="edit" size={16} color="#fa7592" />
                             </Edit>
                           )}
@@ -291,7 +311,7 @@ const Dashboard: React.FC = () => {
                     )}
                   </BoxScheduling>
                 </AlignScheduling>
-                <TextMoreSchedulingButton onPress={() => {}}>
+                <TextMoreSchedulingButton onPress={() => {navigation.navigate('ViewMore', {scheduling: schedulingClient})}}>
                   <TextMoreScheduling>ver mais</TextMoreScheduling>
                 </TextMoreSchedulingButton>
                 <AlingButton>
@@ -372,7 +392,7 @@ const Dashboard: React.FC = () => {
                             </ButtonStartNow>
                           ) : null
                         ) : (
-                          <Edit onPress={() => {}}>
+                          <Edit onPress={() => {navigation.navigate('EditSchedule', {scheduling: schedulingSpecialist[0].scheduling, screen: 'Dashboard'})}}>
                             <Icon name="edit" size={16} color="#fa7592" />
                           </Edit>
                         )}
@@ -398,13 +418,13 @@ const Dashboard: React.FC = () => {
                   )}
                 </AlignScheduling>
                 {getDate(compareDate) <= getDate(selectedDate) ? (
-                  <TextMoreSchedulingButton onPress={() => {}}>
+                  <TextMoreSchedulingButton onPress={() => {navigation.navigate('ViewMore', {scheduling: schedulingSpecialist})}}>
                     <TextMoreScheduling>ver mais</TextMoreScheduling>
                   </TextMoreSchedulingButton>
                 ) : getYear(selectedDate) <= getYear(compareDate) &&
                   getMonth(compareDate) < getMonth(selectedDate) &&
                   getDate(compareDate) > getDate(selectedDate) ? (
-                  <TextMoreSchedulingButton onPress={() => {}}>
+                  <TextMoreSchedulingButton onPress={() => {navigation.navigate('ViewMore', {scheduling: schedulingSpecialist})}}>
                     <TextMoreScheduling>ver mais</TextMoreScheduling>
                   </TextMoreSchedulingButton>
                 ) : null}
