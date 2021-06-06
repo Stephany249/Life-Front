@@ -10,6 +10,7 @@ import { Container, Title, Description, OKButton } from './styles';
 
 interface RouteParams {
   date: number;
+  status: string;
 }
 
 const SchedulingCreated: React.FC = () => {
@@ -32,7 +33,7 @@ const SchedulingCreated: React.FC = () => {
   const formattedDate = useMemo(() => {
     return format(
       routeParams.date,
-      "EEEE', dia' dd 'de' MMMM 'de' yyyy 'às' HH:mm'h'",
+      "eeee', dia' dd 'de' MMMM 'de' yyyy 'às' HH:mm'h'",
       { locale: ptBR },
     );
   }, [routeParams]);
@@ -41,7 +42,7 @@ const SchedulingCreated: React.FC = () => {
     <Container>
       <Icon name="check" size={80} color="#b9b9d9" />
 
-      <Title>Agendamento concluído</Title>
+      <Title>Agendamento {routeParams.status}</Title>
       <Description>{formattedDate}</Description>
 
       <OKButton>

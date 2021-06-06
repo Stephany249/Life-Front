@@ -34,7 +34,7 @@ export const HeaderTable = styled.View<HeightAndWidth>`
   border-top-left-radius: 24;
   border-top-right-radius: 24;
   flex-direction: column;
-  margin-left: ${(props) => (props.height > 725 ? 24 : 0)};
+  margin-left: ${(props) => (props.height > 726 ? 24 : 0)};
 `;
 
 export const ContainerImage = styled.View`
@@ -47,7 +47,7 @@ export const Buttons = styled.View<HeightAndWidth>`
   align-items: center;
   justify-content: center;
   flex-direction: row;
-  margin-top: ${(props) => (props.height > 725 ? 250 : 150)};
+  margin-top: ${(props) => (props.height > 726 ? 250 : 150)};
 `;
 
 export const ButtonOptions = styled.TouchableOpacity`
@@ -55,7 +55,7 @@ export const ButtonOptions = styled.TouchableOpacity`
   width: 144;
   border-radius: 8;
   background-color: ${(props) =>
-    props.disabled === false ? '#7776b6' : '#b9b9d9'};
+    props.disabled === false ? '#7776b6' : '#e9e5e6'};
   margin-right: 16;
 `;
 
@@ -66,5 +66,16 @@ export const TextOptions = styled.Text`
   color: #fff;
   padding-top: 10;
   padding-left: 25;
+  padding-bottom: 10;
+`;
+
+export const TextOptionsCVV = styled.Text`
+  font-size: 16;
+  line-height: 20.8;
+  font-family: 'Lato_400Regular';
+  color: #fff;
+  padding-top: 10;
+  padding-left: 25;
+  padding-right: 25;
   padding-bottom: 10;
 `;
