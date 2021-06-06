@@ -31,18 +31,22 @@ export const LogoImage = styled.View`
 export const Content = styled.ScrollView``;
 
 export const Text = styled.Text`
-  font-size: 16;
+  padding-left: 24;
+  font-size: 20;
   line-height: 20.8;
   font-family: 'Lato_700Bold';
   color: #090b0d;
 `;
 
+export const QuestionAndAnswer = styled.View`
+  margin-top: 16;
+`;
+
 export const Question = styled.Text`
-  font-size: 20;
+  font-size: 18;
   line-height: 26;
   padding-left: 24;
   padding-right: 24;
-  padding-top: 16;
   font-family: 'Lato_700Bold';
   color: #090b0d;
 `;
@@ -57,9 +61,11 @@ export const AlignButton = styled.View`
 `;
 
 export const TextAnswers = styled.Text`
+  padding-left: 36;
+  padding-right: 24;
+  padding-top: 16;
   font-size: 16;
   line-height: 20.8;
-  font-family: 'Lato_700Bold';
+  font-family: 'Lato_400Regular';
   color: #090b0d;
 `;
-

@@ -98,7 +98,6 @@ const ViewMore: React.FC = ({ route }) => {
   );
 
   const hourFormat = useCallback((schedule) => {
-    console.log(schedule);
     const date = parseISO(schedule.date);
     const hours = getHours(date);
     const minutes = getMinutes(date);

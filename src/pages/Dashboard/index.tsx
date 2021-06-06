@@ -62,7 +62,6 @@ import {
   OpenDatePickerButtonText,
   TableClient,
 } from './styles';
-import ReturnTriagePacient from '../ReturnTriagePacient';
 
 interface SchedulingClientItem {
   Profissional: string;
