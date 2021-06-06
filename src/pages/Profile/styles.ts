@@ -45,3 +45,4 @@ export const Title = styled.Text`
   font-family: 'Lato_700Bold';
   color: #090b0d;
 `;
+
