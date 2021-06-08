@@ -4,7 +4,7 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable no-use-before-define */
 import React, { useEffect, useState, useCallback } from 'react';
-import { Dimensions, Image, Platform, StatusBar } from 'react-native';
+import { Dimensions, Image, Linking, Platform, StatusBar } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Icon from 'react-native-vector-icons/Feather';
@@ -71,6 +71,7 @@ interface SchedulingClientItem {
   userId: string;
   medicalRecordsId: number;
   role: string;
+  urlSchedule: string;
 }
 
 interface SchedulingSpecialistItem {
@@ -81,6 +82,7 @@ interface SchedulingSpecialistItem {
     userId: string;
     medicalRecordsId: number;
     role: string;
+    urlSchedule: string;
   };
   name: string;
 }
@@ -136,7 +138,7 @@ const Dashboard: React.FC = () => {
 
   useEffect(() => {
     handleScheduleSpecialist();
-  }, [handleScheduleSpecialist, navigation]);
+  }, [handleScheduleSpecialist, navigation.navigate('Dashboard')]);
 
   if (schedulingClient.length > 0) {
     const date = parseISO(schedulingClient[0].date);
@@ -244,6 +246,10 @@ const Dashboard: React.FC = () => {
     [],
   );
 
+  const handleGoToSchedule = (urlSchedule: string): void => {
+    Linking.openURL(urlSchedule);
+  };
+
   return (
     <>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" translucent />
@@ -285,8 +291,8 @@ const Dashboard: React.FC = () => {
                           </NameScheduling>
                           {subHours(parseISO(schedulingClient[0].date), 2) <=
                           compareDate ? (
-                            parseInt(hourClient) === getHours(compareDate) ? (
-                              <ButtonStartNow onPress={() => {}}>
+                            parseInt(hourClient) === getHours(compareDate) && schedulingClient[0].urlSchedule ? (
+                              <ButtonStartNow onPress={() => {handleGoToSchedule(schedulingClient[0].urlSchedule)}}>
                                 <TextStartNow>Começar agora</TextStartNow>
                               </ButtonStartNow>
                             ) : null
@@ -386,11 +392,15 @@ const Dashboard: React.FC = () => {
                         ) <= compareDate ? (
                           getHours(
                             parseISO(schedulingSpecialist[0].scheduling.date),
-                          ) === getHours(compareDate) ? (
-                            <ButtonStartNow onPress={() => {}}>
+                          ) === getHours(compareDate) && !schedulingSpecialist[0].scheduling.urlSchedule ? (
+                            <ButtonStartNow onPress={() => {navigation.navigate('StartScheduling', {scheduling: schedulingSpecialist[0].scheduling, screen: 'Dashboard'})}}>
                               <TextStartNow>Começar agora</TextStartNow>
                             </ButtonStartNow>
-                          ) : null
+                          ) : (
+                            <ButtonStartNow onPress={() => {handleGoToSchedule(schedulingSpecialist[0].scheduling.urlSchedule)}}>
+                              <TextStartNow>Começar agora</TextStartNow>
+                            </ButtonStartNow>
+                          )
                         ) : (
                           <Edit onPress={() => {navigation.navigate('EditSchedule', {scheduling: schedulingSpecialist[0].scheduling, screen: 'Dashboard'})}}>
                             <Icon name="edit" size={16} color="#fa7592" />

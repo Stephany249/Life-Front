@@ -2,7 +2,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-use-before-define */
 import React, { useCallback } from 'react';
-import { Dimensions, Image, StatusBar } from 'react-native';
+import { Dimensions, Image, Linking, StatusBar } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import { useNavigation } from '@react-navigation/native';
 import {
@@ -107,6 +107,10 @@ const ViewMore: React.FC = ({ route }) => {
     return `${parseHour}:${parseMinutes}`;
   }, []);
 
+  const handleGoToSchedule = (urlSchedule: string): void => {
+    Linking.openURL(urlSchedule);
+  };
+
   return (
     <>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" translucent />
@@ -137,8 +141,13 @@ const ViewMore: React.FC = ({ route }) => {
                       {subHours(parseISO(scheduleClient.date), 2) <=
                       compareDate ? (
                         parseInt(hourFormat(scheduleClient), 10) ===
-                        getHours(compareDate) ? (
-                          <ButtonStartNow onPress={() => {}}>
+                          getHours(compareDate) &&
+                        scheduleClient.urlSchedule ? (
+                          <ButtonStartNow
+                            onPress={() => {
+                              handleGoToSchedule(scheduleClient.urlSchedule);
+                            }}
+                          >
                             <TextStartNow>Começar agora</TextStartNow>
                           </ButtonStartNow>
                         ) : null
@@ -178,14 +187,35 @@ const ViewMore: React.FC = ({ route }) => {
                       <NameScheduling>
                         {nameFormat(scheduleSpecialist)}
                       </NameScheduling>
-                      {subHours(parseISO(scheduleSpecialist.date), 2) <=
-                      compareDate ? (
-                        getHours(parseISO(scheduleSpecialist.date)) ===
-                        getHours(compareDate) ? (
-                          <ButtonStartNow onPress={() => {}}>
+                      {subHours(
+                        parseISO(scheduleSpecialist.scheduling.date),
+                        2,
+                      ) <= compareDate ? (
+                        getHours(
+                          parseISO(scheduleSpecialist.scheduling.date),
+                        ) === getHours(compareDate) &&
+                        !scheduleSpecialist.scheduling.urlSchedule ? (
+                          <ButtonStartNow
+                            onPress={() => {
+                              navigation.navigate('StartScheduling', {
+                                scheduling: scheduleSpecialist.scheduling,
+                                screen: 'ViewMore',
+                              });
+                            }}
+                          >
                             <TextStartNow>Começar agora</TextStartNow>
                           </ButtonStartNow>
-                        ) : null
+                        ) : (
+                          <ButtonStartNow
+                            onPress={() => {
+                              handleGoToSchedule(
+                                scheduleSpecialist.scheduling.urlSchedule,
+                              );
+                            }}
+                          >
+                            <TextStartNow>Começar agora</TextStartNow>
+                          </ButtonStartNow>
+                        )
                       ) : (
                         <Edit
                           onPress={() => {
