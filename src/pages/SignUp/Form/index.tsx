@@ -79,7 +79,7 @@ const Form: React.FC = () => {
       const splitData = data.birthday.split('/');
       const newDate = new Date(
         parseInt(splitData[2], 10),
-        parseInt(splitData[1], 10) - 1,
+        parseInt(splitData[1], 10),
         parseInt(splitData[0], 10),
       );
 

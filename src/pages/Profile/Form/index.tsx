@@ -132,7 +132,7 @@ const Form: React.FC = () => {
           parseInt(splitData[0], 10),
         );
 
-        const daySplitData = getDate(newDate) - 1;
+        const daySplitData = getDate(newDate);
         const monthSplitData = getMonth(newDate);
         const yearSplitData = getYear(newDate);
 
@@ -155,7 +155,7 @@ const Form: React.FC = () => {
 
         const response = await api.put(`/users/profile/${user.id}`, formData);
 
-        updateUser(response.data);
+        updateUser(response.data.user);
 
         Alert.alert('Perfil atualizado com sucesso!');
 
