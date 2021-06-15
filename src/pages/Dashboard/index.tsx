@@ -392,15 +392,15 @@ const Dashboard: React.FC = () => {
                         ) <= compareDate ? (
                           getHours(
                             parseISO(schedulingSpecialist[0].scheduling.date),
-                          ) === getHours(compareDate) && !schedulingSpecialist[0].scheduling.urlSchedule ? (
-                            <ButtonStartNow onPress={() => {navigation.navigate('StartScheduling', {scheduling: schedulingSpecialist[0].scheduling, screen: 'Dashboard'})}}>
-                              <TextStartNow>Começar agora</TextStartNow>
-                            </ButtonStartNow>
-                          ) : (
-                            <ButtonStartNow onPress={() => {handleGoToSchedule(schedulingSpecialist[0].scheduling.urlSchedule)}}>
-                              <TextStartNow>Começar agora</TextStartNow>
-                            </ButtonStartNow>
-                          )
+                          ) === getHours(compareDate) ? (schedulingSpecialist[0].scheduling.urlSchedule === null ?
+                                <ButtonStartNow onPress={() => {navigation.navigate('StartScheduling', {scheduling: schedulingSpecialist[0].scheduling, screen: 'Dashboard'})}}>
+                                  <TextStartNow>Começar agora</TextStartNow>
+                                </ButtonStartNow>
+                              :
+                                <ButtonStartNow onPress={() => {handleGoToSchedule(schedulingSpecialist[0].scheduling.urlSchedule)}}>
+                                  <TextStartNow>Começar agora</TextStartNow>
+                                </ButtonStartNow>
+                            ) : (null)
                         ) : (
                           <Edit onPress={() => {navigation.navigate('EditSchedule', {scheduling: schedulingSpecialist[0].scheduling, screen: 'Dashboard'})}}>
                             <Icon name="edit" size={16} color="#fa7592" />

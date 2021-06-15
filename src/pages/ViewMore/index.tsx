@@ -193,29 +193,30 @@ const ViewMore: React.FC = ({ route }) => {
                       ) <= compareDate ? (
                         getHours(
                           parseISO(scheduleSpecialist.scheduling.date),
-                        ) === getHours(compareDate) &&
-                        !scheduleSpecialist.scheduling.urlSchedule ? (
-                          <ButtonStartNow
-                            onPress={() => {
-                              navigation.navigate('StartScheduling', {
-                                scheduling: scheduleSpecialist.scheduling,
-                                screen: 'ViewMore',
-                              });
-                            }}
-                          >
-                            <TextStartNow>Começar agora</TextStartNow>
-                          </ButtonStartNow>
-                        ) : (
-                          <ButtonStartNow
-                            onPress={() => {
-                              handleGoToSchedule(
-                                scheduleSpecialist.scheduling.urlSchedule,
-                              );
-                            }}
-                          >
-                            <TextStartNow>Começar agora</TextStartNow>
-                          </ButtonStartNow>
-                        )
+                        ) === getHours(compareDate) ? (
+                          scheduleSpecialist.scheduling.urlSchedule === null ? (
+                            <ButtonStartNow
+                              onPress={() => {
+                                navigation.navigate('StartScheduling', {
+                                  scheduling: scheduleSpecialist.scheduling,
+                                  screen: 'ViewMore',
+                                });
+                              }}
+                            >
+                              <TextStartNow>Começar agora</TextStartNow>
+                            </ButtonStartNow>
+                          ) : (
+                            <ButtonStartNow
+                              onPress={() => {
+                                handleGoToSchedule(
+                                  scheduleSpecialist.scheduling.urlSchedule,
+                                );
+                              }}
+                            >
+                              <TextStartNow>Começar agora</TextStartNow>
+                            </ButtonStartNow>
+                          )
+                        ) : null
                       ) : (
                         <Edit
                           onPress={() => {

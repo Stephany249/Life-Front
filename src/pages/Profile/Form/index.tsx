@@ -31,9 +31,10 @@ type FormData = {
 };
 
 const schema = Yup.object().shape({
-  name: Yup.string().required('Nome é obrigatório'),
+  name: Yup.string().trim().required('Nome é obrigatório'),
   cpf: Yup.string().min(11, 'No mínimo 11 dígitos').required(),
   email: Yup.string()
+    .trim()
     .email('Digite um e-mail válido')
     .required('E-mail obrigatório'),
   birthday: Yup.string().required('Data de nascimento é obrigatória'),
@@ -143,7 +144,7 @@ const Form: React.FC = () => {
 
         const formData = {
           name: data.name,
-          email: data.email,
+          email: data.email.trim(),
           birthday: dateEua,
           ...(data.oldPassword
             ? {

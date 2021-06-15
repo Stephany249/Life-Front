@@ -58,9 +58,8 @@ const StartScheduling: React.FC = ({ route }) => {
   const handleInsertUrlSchedule = async (data: {
     url: string;
   }): Promise<any> => {
-    let response: any;
     try {
-      response = await api.patch(
+      await api.patch(
         `/scheduling/specialist/${user.crm}/schedule/${id}/url/`,
         {
           url: data.url,
@@ -89,11 +88,11 @@ const StartScheduling: React.FC = ({ route }) => {
             <Image source={triageImg} />
           </ContainerImage>
           <AlignText>
-            <Title>Iniciar agendamento</Title>
+            <Title>Iniciar consulta</Title>
 
             <SubTitle>
-              Seu próximo passo será informar a url para que possa acontecer a
-              consulta ;)
+              Para iniciar o agendamento você precisará copiar o link da vídeo
+              chamada do aplicativo que irá utilizar e colar no campo abaixo
             </SubTitle>
           </AlignText>
 
@@ -102,7 +101,7 @@ const StartScheduling: React.FC = ({ route }) => {
               control={control}
               render={({ field: { onChange, onBlur, value } }) => (
                 <TextField
-                  label="URL do agendamento"
+                  label="URL da consulta"
                   onBlur={onBlur}
                   error={errors?.url}
                   onChangeText={(value: any) => onChange(value)}

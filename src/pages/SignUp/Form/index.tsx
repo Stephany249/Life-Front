@@ -35,9 +35,10 @@ type FormData = {
 };
 
 const schema = Yup.object().shape({
-  name: Yup.string().required('Nome é obrigatório'),
-  cpf: Yup.string().min(11, 'No mínimo 11 dígitos').required(),
+  name: Yup.string().trim().required('Nome é obrigatório'),
+  cpf: Yup.string().min(11, 'No mínimo 14 dígitos').required(),
   email: Yup.string()
+    .trim()
     .email('Digite um e-mail válido')
     .required('E-mail obrigatório'),
   birthday: Yup.string().required('Data de nascimento é obrigatória'),
@@ -96,7 +97,7 @@ const Form: React.FC = () => {
         response = await api.post('users/client', {
           name: data.name,
           cpf: data.cpf,
-          email: data.email,
+          email: data.email.trim(),
           birthday: dateEua.toString(),
           password: data.password,
           passwordConfirmation: data.passwordConfirmation,
@@ -105,7 +106,7 @@ const Form: React.FC = () => {
         response = await api.post('users/specialist', {
           name: data.name,
           cpf: data.cpf,
-          email: data.email,
+          email: data.email.trim(),
           birthday: dateEua.toString(),
           password: data.password,
           passwordConfirmation: data.passwordConfirmation,
@@ -187,7 +188,7 @@ const Form: React.FC = () => {
         control={control}
         render={({ field: { onChange, onBlur, value } }) => (
           <TextInputMaskComponent
-            label="Data de aniversário"
+            label="Data de nascimento"
             type="datetime"
             onBlur={onBlur}
             error={errors?.birthday}

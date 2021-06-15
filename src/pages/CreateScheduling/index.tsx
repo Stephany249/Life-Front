@@ -206,6 +206,7 @@ const CreateScheduling: React.FC = ({ route }) => {
         </Header>
 
         <Content>
+          <Title>Escolha o profissional</Title>
           <SpecialistListContainer>
             <SpecialistList
               horizontal

@@ -18,6 +18,7 @@ type FormData = {
 
 const schema = Yup.object().shape({
   email: Yup.string()
+    .trim()
     .email('Digite um e-mail válido')
     .required('E-mail obrigatório'),
   password: Yup.string().required('Senha obrigatória'),
@@ -46,7 +47,7 @@ const Form: React.FC = () => {
   }): Promise<any> => {
     try {
       await signIn({
-        email: data.email,
+        email: data.email.trim(),
         password: data.password,
       });
     } catch (err) {
